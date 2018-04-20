@@ -52,10 +52,10 @@
         end
         --
         local function TextOnScreen(str)
-            local res = Game.Resolution()                         
-            Callback.Add("Draw", function()                
-                Draw.Text(str, 64, res.x/2, res.y/2, Draw.Color(255,255,0))
-            end)
+            local res = Game.Resolution() 
+            Callback.Add("Draw", function()                       
+                Draw.Text(str, 64, res.x/2-(#str * 10), res.y/2, Draw.Color(255,255,0,0))
+            end)                        
         end
         local function UpdateLoader()
             DownloadFile(SCRIPT_URL, SCRIPT_PATH, "WR.lua")
@@ -64,7 +64,7 @@
         --
         local function CheckUpdate()
             local currentData, latestData = dofile(versionControl), dofile(versionControl2)
-            if currentData.Utilities.loader <= latestData.Utilities.loader then
+            if currentData.Utilities.loader < latestData.Utilities.loader then
                 UpdateLoader()
             end
 
@@ -110,7 +110,7 @@
         --end
         --
         GetVersionControl()
-        CheckUpdate(currentData, latestData)
+        CheckUpdate(currentData, latestData)        
 
         --    timeCheck = true
         --    GetScriptData()
