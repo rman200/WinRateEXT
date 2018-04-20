@@ -69,6 +69,7 @@
                 f:close()
                 return true 
             end
+            TextOnScreen("Check Installation Instructions on Forum!")
         end
         --
         local function DownloadFile(from, to, filename)
