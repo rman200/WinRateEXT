@@ -1,0 +1,68 @@
+Data = {
+    Champions = {
+        Corki = {
+            Version = 0,
+            Changelog = "Corki Changelog Here",
+        },
+        Ashe = {
+            Version = 0,
+            Changelog = "Ashe Changelog Here",
+        },
+        Draven = {
+            Version = 0,
+            Changelog = "Draven Changelog Here",
+        },
+        Darius = {
+            Version = 0,
+            Changelog = "Darius Changelog Here",
+        },
+        Sion = {
+            Version = 0,
+            Changelog = "Sion Changelog Here",
+        },
+        Vladimir = {
+            Version = 0,
+            Changelog = "Vladimir Changelog Here",
+        },
+    },
+    Loader = {
+        Version = 0,
+    },
+    Dependencies = {
+        commonLib = {
+            Version = 0,
+        },
+        prediction = {
+            Version = 0,
+        },
+        changelog = {
+            Version = 0,
+        },
+        callbacks = {
+            Version = 0,
+        },
+        menuLoad = {
+            Version = 0,
+        },
+    },
+    Utilities = {
+        baseult = {
+            Version = 0,
+        },
+        evade = {
+            Version = 0,
+        },
+        tracker = {
+            Version = 0,
+        },
+        orbwalker = {
+            Version = 0,
+        },
+    },
+    Core = {
+        Version = 0,
+        Changelog = "WR Version ChangeLog Here",
+    },
+}
+
+return Data
