@@ -8,7 +8,7 @@
         return 
     end
 
-    _G.WR_Loaded = true
+
 
     local char_name          = myHero.charName 
 
@@ -61,6 +61,14 @@
             Callback.Add("Draw", function()                       
                 Draw.Text(str, 64, res.x/2-(#str * 10), res.y/2, Draw.Color(255,255,0,0))
             end)                        
+        end
+        --
+        local function CheckFolder()
+            local f = io.open(CHAMP_PATH.."folderTest", "w")
+            if f then
+                f:close()
+                return true 
+            end
         end
         --
         local function DownloadFile(from, to, filename)
@@ -120,8 +128,11 @@
             end
             UpdateVersionControl(currentData)
         end
-        GetVersionControl()
-        CheckUpdate()
+        if CheckFolders() then
+            GetVersionControl()
+            CheckUpdate()
+            return true
+        end
     end
 
     local function LoadWR() --These 2 functions are only gonna be used here so there's no point of having out of LoadWR()'s chunk
@@ -148,9 +159,11 @@
 
     --WR--
 
-    function OnLoad()
-        AutoUpdate()
-        --_G.versionData = versionData
-        --_G.isUpdated, _G.timeCheck = isUpdated, timeCheck  
-        LoadWR()
+    function OnLoad()        
+        if AutoUpdate() then
+            _G.WR_Loaded = true
+            --_G.versionData = versionData
+            --_G.isUpdated, _G.timeCheck = isUpdated, timeCheck  
+            LoadWR()
+        end
     end    
