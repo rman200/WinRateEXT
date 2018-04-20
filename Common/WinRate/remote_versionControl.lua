@@ -29,8 +29,8 @@ local Data = {
 			Vladimir Changelog Here]]
 		},
 	},
-	utilities = {
-		["loader_version"] = "1.00",
+	Utilities = {
+		["loader"] = "1.00",
 		["changelog"] 	   = "1.00",
 		["callbacks"] 	   = "1.00",
 		["menuLoad"]  	   = "1.00",
