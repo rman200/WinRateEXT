@@ -8,8 +8,6 @@
         return 
     end
 
-
-
     local char_name          = myHero.charName 
 
     local open               = io.open
@@ -18,25 +16,24 @@
     local format             = string.format
 
     local WR_PATH            = COMMON_PATH.."WinRate/"
-    local ACTIVE_PATH        = "/Champion Modules/WR_"..char_name
-    local CHAMP_PATH         = WR_PATH..'/Champion Modules'
-    local SCRIPT_URL         = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/"
-    local WR_URL             = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Common/WinRate/"
-    local CHAMP_URL          = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Common/WinRate/Champion%20Modules/"
-
-    local versionControl     = WR_PATH .. "versionControl.lua"
-    local versionControl2    = WR_PATH .. "versionControl2.lua"
     local dotlua             = ".lua" 
-    
-    --WR--
+
     local function readAll(file)
         local f = assert(open(file, "r"))
         local content = f:read("*all")
         f:close()
         return content
     end
-
+    
+    --WR--
     local function AutoUpdate()
+        local CHAMP_PATH = WR_PATH..'/Champion Modules/'
+        local SCRIPT_URL = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/"
+        local WR_URL     = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Common/WinRate/"
+        local CHAMP_URL  = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Common/WinRate/Champion%20Modules/"
+        local versionControl     = WR_PATH .. "versionControl.lua"
+        local versionControl2    = WR_PATH .. "versionControl2.lua"
+        --
         local function serializeTable(val, name, depth) --recursive function to turn a table into plain text, pls dont mess with this
             skipnewlines = false
             depth = depth or 0
@@ -63,8 +60,8 @@
             end)                        
         end
         --
-        local function CheckFolder()
-            local f = io.open(CHAMP_PATH.."folderTest", "w")
+        local function CheckFolders()
+            local f = open(CHAMP_PATH.."folderTest", "w")
             if f then
                 f:close()
                 return true 
@@ -105,26 +102,28 @@
             end
             --[[Core Check]]
             if currentData.Core.Version < latestData.Core.Version then
-                DownloadFile(WR_URL, WR_PATH, "core.lua")
+                --DownloadFile(WR_URL, WR_PATH, "core.lua")
                 currentData.Core.Version = latestData.Core.Version
+                currentData.Core.Changelog = latestData.Core.Changelog
             end
-            --[[Active Champ Module Check]]
+            --[[Active Champ Module Check]]            
             if currentData.Champions[char_name].Version < latestData.Champions[char_name].Version then
                 DownloadFile(CHAMP_URL, CHAMP_PATH, "WR_"..char_name..dotlua)
                 currentData.Champions[char_name].Version = latestData.Champions[char_name].Version
+                currentData.Champions[char_name].Changelog = latestData.Champions[char_name].Changelog
             end
             --[[Dependencies Check]]
             for k,v in pairs(latestData.Dependencies) do
-                if not currentData.Dependencies.k or currentData.Dependencies.k.Version < v.Version then
+                if not currentData.Dependencies[k] or currentData.Dependencies[k].Version < v.Version then
                     DownloadFile(WR_URL, WR_PATH, k..dotlua)
-                    currentData.Dependencies.k.Version = v.Version
+                    currentData.Dependencies[k].Version = v.Version
                 end
             end
             --[[Utilities Check]]
             for k,v in pairs(latestData.Utilities) do
-                if not currentData.Utilities.k or currentData.Utilities.k.Version < v.Version then
+                if not currentData.Utilities[k] or currentData.Utilities[k].Version < v.Version then
                     DownloadFile(WR_URL, WR_PATH, k..dotlua)
-                    currentData.Utilities.k.Version = v.Version
+                    currentData.Utilities[k].Version = v.Version
                 end
             end
             UpdateVersionControl(currentData)
@@ -137,23 +136,20 @@
     end
 
     local function LoadWR() --These 2 functions are only gonna be used here so there's no point of having out of LoadWR()'s chunk
-        local function clearModule()
-            local f = assert(open(WR_PATH.."activeModule.lua", "w"))
-            f:write()
-            f:close()        
-        end
-        --
-        local function appendModule(content)
-            local f = assert(open(WR_PATH.."activeModule.lua", "a"))
-            local content = f:write(content)
+        local ACTIVE_PATH = "/Champion Modules/WR_"..char_name
+        local function writeModule(content)            
+            local f = assert(open(WR_PATH.."activeModule.lua", content and "a" or "w"))
+            if content then
+                f:write(content)
+            end
             f:close()        
         end
         --
         local dependencies = {"menuLoad", "commonLib", "callbacks", "prediction", ACTIVE_PATH} 
-        clearModule()
+        writeModule()
         for i=1, #dependencies do
             local dependency = readAll(concat({WR_PATH, dependencies[i], dotlua}))
-            appendModule(dependency)    
+            writeModule(dependency)    
         end                          
         dofile(WR_PATH.."activeModule"..dotlua) 
     end
@@ -163,8 +159,6 @@
     function OnLoad()        
         if AutoUpdate() then
             _G.WR_Loaded = true
-            --_G.versionData = versionData
-            --_G.isUpdated, _G.timeCheck = isUpdated, timeCheck  
             LoadWR()
         end
     end    
