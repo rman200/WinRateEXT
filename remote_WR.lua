@@ -8,6 +8,15 @@
         return 
     end
 
+    local champs = {        --Supported Champions
+        "Ashe",                 --v1.0 - Reestructured and Improved - RMAN        
+        "Corki",                --v1.0 - Reestructured and Improved - RMAN
+        "Darius",               --v1.0 - Reestructured and Improved - RMAN
+        "Draven",               --v1.0 - Reestructured and Improved - RMAN
+        "Sion",                 --v1.0 -        First Release       - RMAN
+        "Vladimir",             --v1.0 -        First Release       - RMAN         
+    }   
+
     local char_name          = myHero.charName 
 
     local open               = io.open
@@ -156,8 +165,8 @@
 
     --WR--
 
-    function OnLoad()        
-        if AutoUpdate() then
+    function OnLoad()   
+        if table.contains(champs, char_name) and AutoUpdate() then
             _G.WR_Loaded = true
             LoadWR()
         end
