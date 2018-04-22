@@ -55,9 +55,11 @@
     local _KNOCKUP = 29
     local _KNOCKBACK = 30 
     --
-    local Vector    = Vector
-    local KeyDown   = Control.KeyDown 
-    local KeyUp     = Control.KeyUp
+    local Vector       = Vector
+    local KeyDown      = Control.KeyDown 
+    local KeyUp        = Control.KeyUp
+    local IsKeyDown    = Control.IsKeyDown
+    local SetCursorPos = Control.SetCursorPos
     --
     local GameCanUseSpell      = Game.CanUseSpell
     local Timer                = Game.Timer
@@ -81,6 +83,7 @@
     local DrawLine                 = Draw.Line
     local DrawColor                = Draw.Color
     local DrawMap                  = Draw.CircleMinimap
+    local DrawText                 = Draw.Text
     --
     local barHeight = 8
     local barWidth = 103
