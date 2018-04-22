@@ -430,3 +430,5 @@
             Control.CastSpell(key, target)
         end
     end
+
+    Vladimir()
