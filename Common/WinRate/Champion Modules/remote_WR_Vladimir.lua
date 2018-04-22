@@ -4,7 +4,7 @@
     function Vladimir:__init()
         --[[Data Initialization]]
         self.Allies, self.Enemies = {}, {}
-        self.scriptVersion = "1.0"
+        self.scriptVersion = "1.01"
         self:Spells()
         self:Menu() 
         --[[Default Callbacks]]   
@@ -360,15 +360,6 @@
         end 
     end
 
-    local function castSummoner(summonerName, castPos)
-        local castPos = castPos or cursorPos
-        if myHero:GetSpellData(SUMMONER_1).name == summonerName and Game.CanUseSpell(SUMMONER_1) == 0 then
-            Control.CastSpell(HK_SUMMONER_1, castPos)
-        elseif myHero:GetSpellData(SUMMONER_2).name == summonerName and Game.CanUseSpell(SUMMONER_2) == 0 then
-            Control.CastSpell(HK_SUMMONER_2, castPos)
-        end
-    end
-
     local bursting, startEarly = false, false
     function Vladimir:Burst()          
         Orbwalk()
@@ -376,7 +367,7 @@
             return self.Q:IsReady() and self:LoadQ()
         end
         if not bursting and self.Q:IsReady() and (self.E:IsReady() or startEarly) and self.R:IsReady() then
-            local canFlash = self.Flash:IsReady() and Menu.Burst.Flash:Value()
+            local canFlash = self.Flash and self.Flash:IsReady() and Menu.Burst.Flash:Value()
             local range = self.E.Range+(canFlash and self.Flash.Range or 0)
             local bTarget, eTarget = GetTarget(range+300, 1), GetTarget(self.E.Range, 1)
             local shouldFlash = canFlash and bTarget ~= eTarget
@@ -426,9 +417,7 @@
 
     function Vladimir:Protobelt(target)
         local slot, key = GetItemSlot(3152)
-        if slot then
+        if key and slot ~= 0 then
             Control.CastSpell(key, target)
         end
     end
-
-    Vladimir()
