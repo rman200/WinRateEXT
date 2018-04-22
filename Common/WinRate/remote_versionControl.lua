@@ -1,7 +1,7 @@
 Data = {
     Champions = {
         Corki = {
-            Version = 1,
+            Version = 1.01,
             Changelog = "Corki Changelog Here",
         },
         Ashe = {
@@ -9,19 +9,19 @@ Data = {
             Changelog = "Ashe Changelog Here",
         },
         Draven = {
-            Version = 1,
+            Version = 1.01,
             Changelog = "Draven Changelog Here",
         },
         Darius = {
-            Version = 1,
+            Version = 1.01,
             Changelog = "Darius Changelog Here",
         },
         Sion = {
-            Version = 1,
+            Version = 1.01,
             Changelog = "Sion Changelog Here",
         },
         Vladimir = {
-            Version = 1,
+            Version = 1.01,
             Changelog = "Vladimir Changelog Here",
         },
     },
@@ -42,7 +42,7 @@ Data = {
             Version = 1,
         },
         menuLoad = {
-            Version = 1,
+            Version = 1.01,
         },
     },
     Utilities = {
