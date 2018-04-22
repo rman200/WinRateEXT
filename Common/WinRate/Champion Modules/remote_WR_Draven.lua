@@ -369,3 +369,5 @@
         local axesOnHand = (HasBuff(myHero, "dravenspinningleft") and 2) or (HasBuff(myHero, "dravenspinning") and 1) or 0  
         return #self.AxeList + axesOnHand
     end
+
+    Draven()
