@@ -330,3 +330,5 @@
             self:UseItem(self.Tiamat.Key, true)           
         end
     end
+    
+    Darius()
