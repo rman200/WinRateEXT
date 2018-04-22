@@ -38,8 +38,9 @@
     local atan = math.atan 
     --
     local contains = table.contains
-    local insert = table.insert 
-    local remove = table.remove 
+    local insert   = table.insert 
+    local remove   = table.remove 
+    local sort     = table.sort
     --
     local TEAM_JUNGLE = 300 
     local TEAM_ALLY = myHero.team 
