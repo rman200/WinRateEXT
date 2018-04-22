@@ -301,3 +301,4 @@
         return self:HasBigOne() and self.R:GetDamage(unit, 2) or self.R:GetDamage(unit)
     end
 
+    Corki()
