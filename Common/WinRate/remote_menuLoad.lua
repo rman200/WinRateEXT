@@ -3,8 +3,10 @@
         "Ashe",                 --v1.0 - Reestructured and Improved - RMAN        
         "Corki",                --v1.0 - Reestructured and Improved - RMAN
         "Darius",               --v1.0 - Reestructured and Improved - RMAN
-        "Draven"                --v1.0 - Reestructured and Improved - RMAN         
-    }
+        "Draven",               --v1.0 - Reestructured and Improved - RMAN
+        "Sion",                 --v1.0 -        First Release       - RMAN
+        "Vladimir",             --v1.0 -        First Release       - RMAN         
+    }  
 
     local brokenIconChamps = { 
         "Twitch"
