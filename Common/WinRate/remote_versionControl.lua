@@ -21,7 +21,7 @@ Data = {
             Changelog = "Sion Changelog Here",
         },
         Vladimir = {
-            Version = 1.03,
+            Version = 1.04,
             Changelog = "Vladimir Changelog Here",
         },
     },
