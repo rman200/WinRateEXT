@@ -35,9 +35,9 @@ Data = {
         prediction = {
             Version = 1,
         },
-        changelog = {
-            Version = 1,
-        },
+        --changelog = {
+        --    Version = 1,
+        --},
         callbacks = {
             Version = 1,
         },
