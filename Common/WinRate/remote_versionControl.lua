@@ -30,7 +30,7 @@ Data = {
     },
     Dependencies = {
         commonLib = {
-            Version = 1.02,
+            Version = 1.03,
         },
         prediction = {
             Version = 1,
@@ -42,7 +42,7 @@ Data = {
             Version = 1,
         },
         menuLoad = {
-            Version = 1.01,
+            Version = 1.02,
         },
     },
     Utilities = {

@@ -7,35 +7,23 @@
 
   	require "MapPositionGOS"
   	require "DamageLib"    
-  	require "2DGeometry"    
-
-
---<Interfaces Control>
-    local _ENV = _G
-    local SDK               = _G.SDK
-    local Orbwalker         = SDK.Orbwalker 
-    local ObjectManager     = SDK.ObjectManager
-    local TargetSelector    = SDK.TargetSelector
-    local HealthPrediction  = SDK.HealthPrediction
-    --local Prediction     = Pred --Wont work cuz its being initialized before the class
-   --</Interfaces Control>
-
---
-    local huge = math.huge
-    local pi = math.pi
+  	require "2DGeometry"
+    --
+    local huge  = math.huge
+    local pi    = math.pi
     local floor = math.floor 
-    local ceil = math.ceil 
-    local sqrt = math.sqrt 
-    local max = math.max 
-    local min = math.min 
+    local ceil  = math.ceil 
+    local sqrt  = math.sqrt 
+    local max   = math.max 
+    local min   = math.min 
     --
     local lenghtOf = math.lenghtOf
-    local abs = math.abs 
-    local deg = math.deg 
-    local cos = math.cos 
-    local sin = math.sin 
-    local acos = math.acos 
-    local atan = math.atan 
+    local abs      = math.abs 
+    local deg      = math.deg 
+    local cos      = math.cos 
+    local sin      = math.sin 
+    local acos     = math.acos 
+    local atan     = math.atan 
     --
     local contains = table.contains
     local insert   = table.insert 
@@ -46,14 +34,14 @@
     local TEAM_ALLY = myHero.team 
     local TEAM_ENEMY = TEAM_JUNGLE - TEAM_ALLY
     --
-    local _STUN = 5
-    local _TAUNT = 8    
-    local _SLOW = 10    
-    local _SNARE = 11
-    local _FEAR = 21    
-    local _CHARM = 22
-    local _SUPRESS = 24        
-    local _KNOCKUP = 29
+    local _STUN      = 5
+    local _TAUNT     = 8    
+    local _SLOW      = 10    
+    local _SNARE     = 11
+    local _FEAR      = 21    
+    local _CHARM     = 22
+    local _SUPRESS   = 24        
+    local _KNOCKUP   = 29
     local _KNOCKBACK = 30 
     --
     local Vector       = Vector
@@ -62,34 +50,54 @@
     local IsKeyDown    = Control.IsKeyDown
     local SetCursorPos = Control.SetCursorPos
     --
-    local GameCanUseSpell      = Game.CanUseSpell
-    local Timer                = Game.Timer
-    local Latency              = Game.Latency
-    local HeroCount            = Game.HeroCount
-    local Hero                 = Game.Hero
-    local MinionCount          = Game.MinionCount
-    local Minion               = Game.Minion
-    local TurretCount          = Game.TurretCount
-    local Turret               = Game.Turret
-    local WardCount            = Game.WardCount
-    local Ward                 = Game.Ward
-    local ObjectCount          = Game.ObjectCount
-    local Object               = Game.Object
-    local MissileCount         = Game.MissileCount
-    local Missile              = Game.Missile
-    local ParticleCount        = Game.ParticleCount
-    local Particle             = Game.Particle 
+    local GameCanUseSpell = Game.CanUseSpell
+    local Timer           = Game.Timer
+    local Latency         = Game.Latency
+    local HeroCount       = Game.HeroCount
+    local Hero            = Game.Hero
+    local MinionCount     = Game.MinionCount
+    local Minion          = Game.Minion
+    local TurretCount     = Game.TurretCount
+    local Turret          = Game.Turret
+    local WardCount       = Game.WardCount
+    local Ward            = Game.Ward
+    local ObjectCount     = Game.ObjectCount
+    local Object          = Game.Object
+    local MissileCount    = Game.MissileCount
+    local Missile         = Game.Missile
+    local ParticleCount   = Game.ParticleCount
+    local Particle        = Game.Particle 
     --
-    local DrawCircle               = Draw.Circle    
-    local DrawLine                 = Draw.Line
-    local DrawColor                = Draw.Color
-    local DrawMap                  = Draw.CircleMinimap
-    local DrawText                 = Draw.Text
+    local DrawCircle  = Draw.Circle    
+    local DrawLine    = Draw.Line
+    local DrawColor   = Draw.Color
+    local DrawMap     = Draw.CircleMinimap
+    local DrawText    = Draw.Text
     --
-    local barHeight = 8
-    local barWidth = 103
+    local barHeight  = 8
+    local barWidth   = 103
     local barXOffset = 18                            
     local barYOffset = 2
+
+    --<Interfaces Control>
+
+    if not SDK then
+        local res, str = Game.Resolution(), "PLEASE ENABLE ICS ORBWALKER"
+        Callback.Add("Draw", function()                       
+            DrawText(str, 64, res.x/2-(#str * 14), res.y/2, DrawColor(255,255,0,0))
+        end)
+        return 
+    end
+    
+    local _ENV = _G
+    local SDK               = _G.SDK
+    local Orbwalker         = SDK.Orbwalker 
+    local ObjectManager     = SDK.ObjectManager
+    local TargetSelector    = SDK.TargetSelector
+    local HealthPrediction  = SDK.HealthPrediction
+    --local Prediction     = Pred --Wont work cuz its being initialized before the class
+
+    --</Interfaces Control>
 
     --<IOrbwalker>
 
@@ -211,7 +219,14 @@
     
     --</IOrbwalker>
 
-	function Ready(spell)
+    local function TextOnScreen(str)
+        local res = Game.Resolution() 
+        Callback.Add("Draw", function()                       
+            DrawText(str, 64, res.x/2-(#str * 10), res.y/2, DrawColor(255,255,0,0))
+        end)                        
+    end
+
+	local function Ready(spell)
         return GameCanUseSpell(spell) == 0
     end
 

@@ -8,8 +8,6 @@
         return 
     end
 
-
-
     local open               = io.open
     local concat             = table.concat
     local rep                = string.rep 
@@ -18,7 +16,7 @@
     local WR_PATH            = COMMON_PATH.."WinRate/"
     local dotlua             = ".lua" 
     local charName           = myHero.charName 
-    local shouldLoad         = {"menuLoad", "commonLib", "callbacks", "prediction"}
+    local shouldLoad         = {"commonLib"}
 
     local function readAll(file)
         local f = assert(open(file, "r"))
@@ -135,6 +133,7 @@
                     shouldLoad[#shouldLoad+1] = tostring(k)
                 end
             end
+            shouldLoad[#shouldLoad+1] = "/Champion Modules/WR_"..charName
             UpdateVersionControl(currentData)
         end
         local function CheckSupported()
@@ -150,8 +149,7 @@
         end
     end
 
-    local function LoadWR() 
-        local ACTIVE_PATH = "/Champion Modules/WR_"..charName
+    local function LoadWR()         
         local function writeModule(content)            
             local f = assert(open(WR_PATH.."activeModule.lua", content and "a" or "w"))
             if content then
@@ -159,11 +157,10 @@
             end
             f:close()        
         end
-        --
-        local dependencies = {"menuLoad", "commonLib", "callbacks", "prediction", ACTIVE_PATH} 
+        --        
         writeModule()
-        for i=1, #dependencies do
-            local dependency = readAll(concat({WR_PATH, dependencies[i], dotlua}))
+        for i=1, #shouldLoad do
+            local dependency = readAll(concat({WR_PATH, shouldLoad[i], dotlua}))
             writeModule(dependency)    
         end                          
         dofile(WR_PATH.."activeModule"..dotlua) 
