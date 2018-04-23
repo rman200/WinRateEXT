@@ -330,7 +330,7 @@
             local tP, tP2, pP2 = target.pos,target:GetPrediction(huge, 0.2), myHero:GetPrediction(huge, 0.2)           
             -- 
             if GetDistance(tP) <= eRange then --if inside(might go out)
-                if #mCollision(myHero, tP, self.E, minions) == 0 then
+                if #mCollision(myHero.pos, tP, self.E, minions) == 0 then
                     willHit = willHit + 1
                 end
                 if GetDistance(tP2, pP2) > eRange then                
