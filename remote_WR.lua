@@ -8,16 +8,7 @@
         return 
     end
 
-    local champs = {        --Supported Champions
-        "Ashe",                 --v1.0 - Reestructured and Improved - RMAN        
-        "Corki",                --v1.0 - Reestructured and Improved - RMAN
-        "Darius",               --v1.0 - Reestructured and Improved - RMAN
-        "Draven",               --v1.0 - Reestructured and Improved - RMAN
-        "Sion",                 --v1.0 -        First Release       - RMAN
-        "Vladimir",             --v1.0 -        First Release       - RMAN         
-    }   
 
-    local char_name          = myHero.charName 
 
     local open               = io.open
     local concat             = table.concat
@@ -26,6 +17,8 @@
 
     local WR_PATH            = COMMON_PATH.."WinRate/"
     local dotlua             = ".lua" 
+    local charName           = myHero.charName 
+    local shouldLoad         = {"menuLoad", "commonLib", "callbacks", "prediction"}
 
     local function readAll(file)
         local f = assert(open(file, "r"))
@@ -116,16 +109,20 @@
                 currentData.Core.Changelog = latestData.Core.Changelog
             end
             --[[Active Champ Module Check]]            
-            if currentData.Champions[char_name].Version < latestData.Champions[char_name].Version then
-                DownloadFile(CHAMP_URL, CHAMP_PATH, "WR_"..char_name..dotlua)
-                currentData.Champions[char_name].Version = latestData.Champions[char_name].Version
-                currentData.Champions[char_name].Changelog = latestData.Champions[char_name].Changelog
+            if not currentData.Champions[charName] or currentData.Champions[charName].Version < latestData.Champions[charName].Version then
+                DownloadFile(CHAMP_URL, CHAMP_PATH, "WR_"..charName..dotlua)
+                currentData.Champions[charName].Version = latestData.Champions[charName].Version
+                currentData.Champions[charName].Changelog = latestData.Champions[charName].Changelog
             end
             --[[Dependencies Check]]
             for k,v in pairs(latestData.Dependencies) do
                 if not currentData.Dependencies[k] or currentData.Dependencies[k].Version < v.Version then
                     DownloadFile(WR_URL, WR_PATH, k..dotlua)
                     currentData.Dependencies[k].Version = v.Version
+                end
+                local name = tostring(k)
+                if v.Version >=1 and name ~= "commonLib" then
+                    shouldLoad[#shouldLoad+1] = name
                 end
             end
             --[[Utilities Check]]
@@ -134,18 +131,27 @@
                     DownloadFile(WR_URL, WR_PATH, k..dotlua)
                     currentData.Utilities[k].Version = v.Version
                 end
+                if v.Version >=1 then
+                    shouldLoad[#shouldLoad+1] = tostring(k)
+                end
             end
             UpdateVersionControl(currentData)
         end
+        local function CheckSupported()
+            local Data = dofile(versionControl2)
+            return Data.Champions[charName]
+        end
         if CheckFolders() then
             GetVersionControl()
-            CheckUpdate()
-            return true
+            if CheckSupported() then  
+                CheckUpdate()
+                return true
+            end
         end
     end
 
-    local function LoadWR() --These 2 functions are only gonna be used here so there's no point of having out of LoadWR()'s chunk
-        local ACTIVE_PATH = "/Champion Modules/WR_"..char_name
+    local function LoadWR() 
+        local ACTIVE_PATH = "/Champion Modules/WR_"..charName
         local function writeModule(content)            
             local f = assert(open(WR_PATH.."activeModule.lua", content and "a" or "w"))
             if content then
@@ -166,7 +172,7 @@
     --WR--
 
     function OnLoad()   
-        if table.contains(champs, char_name) and AutoUpdate() then
+        if AutoUpdate() then
             _G.WR_Loaded = true
             LoadWR()
         end
