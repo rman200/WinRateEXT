@@ -116,7 +116,7 @@
         Menu.Burst:MenuElement({id = "Flash", name = "Allow Flash On Burst", value = true}) 
         Menu.Burst:MenuElement({id = "Key", name = "Burst Key", key = string.byte("T")})
         --
-        Menu:MenuElement({name = "[WR] "..char_name.." Script", drop = {"Release_"..self.scriptVersion}})
+        Menu:MenuElement({name = "[WR] "..charName.." Script", drop = {"Release_"..self.scriptVersion}})
         --
         self.menuLoadRequired = true
         Callback.Add("Tick", function() self:MenuLoad() end)
@@ -133,7 +133,7 @@
                     insert(self.Allies, hero)                    
                 else
                     insert(self.Enemies, hero)                    
-                    Menu.R.Heroes:MenuElement({id = charName, name = charName, value = false, leftIcon = "https://raw.githubusercontent.com/HiImWeedle/GoS/master/Icons/Champs/"..charName..".png"})
+                    Menu.R.Heroes:MenuElement({id = charName, name = charName, value = false, leftIcon = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/champions/"..charName..".png"})
                 end
             end                      
             Menu.R.Heroes.Loading:Hide(true)            

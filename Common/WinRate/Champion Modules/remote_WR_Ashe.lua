@@ -49,7 +49,7 @@
             Width = 10,
             Collision = false,
             From = myHero,
-            Type = "Skillshot"
+            Type = "AOE"
         })
         self.R = Spell({
             Slot = 3,
@@ -109,7 +109,7 @@
         Menu.R:MenuElement({id = "Interrupter", name = "Use To Interrupt", value = false})
         Menu.R:MenuElement({id = "Interrupt", name = "Interrupt Targets", type = MENU})
             Menu.R.Interrupt:MenuElement({id = "Loading", name = "Loading Champions...", type = SPACE})
-        Menu:MenuElement({name = "[WR] "..char_name.." Script", drop = {"Release_"..self.scriptVersion}})
+        Menu:MenuElement({name = "[WR] "..charName.." Script", drop = {"Release_"..self.scriptVersion}})
         --
         self.menuLoadRequired = true
         Callback.Add("Tick", function() self:MenuLoad() end)
@@ -126,14 +126,18 @@
                     insert(self.Allies, hero)                    
                 else
                     insert(self.Enemies, hero)
-                    Interrupter:AddToMenu(hero, Menu.R.Interrupt)                    
-                    Menu.R.Heroes:MenuElement({id = charName, name = charName, value = false, leftIcon = "https://raw.githubusercontent.com/HiImWeedle/GoS/master/Icons/Champs/"..charName..".png"})                    
+                    Interrupter:AddToMenu(hero, Menu.R.Interrupt)                                        
+                    Menu.R.Heroes:MenuElement({id = charName, name = charName, value = false, leftIcon = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/champions/"..charName..".png"})                    
                 end
             end
-            if #Menu.R.Interrupt == 0 then
+            --
+            local count = 0
+            for _ in pairs(Menu.R.Interrupt) do count = count+1 end
+            if count == 1 then
                 Menu.R.Interrupt:MenuElement({name = "No Spells To Be Interrupted", drop = {" "}})
                 Callback.Del("Tick", function() Interrupter:OnTick() end)
-            end            
+            end 
+            --           
             Menu.R.Heroes.Loading:Hide(true)
             Menu.R.Interrupt.Loading:Hide(true)
             self.menuLoadRequired = nil         

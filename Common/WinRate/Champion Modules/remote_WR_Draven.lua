@@ -108,7 +108,7 @@
         Menu.R:MenuElement({id = "Count", name = "Auto Use When X Enemies", value = 2, min = 0, max = 5, step = 1})
         Menu.R:MenuElement({id = "KS", name = "Use on KS", value = true})
         Menu.R:MenuElement({id = "Mana", name = "Min Mana %", value = 0, min = 0, max = 100, step = 1})
-        Menu:MenuElement({name = "[WR] "..char_name.." Script", drop = {"Release_"..self.scriptVersion}})
+        Menu:MenuElement({name = "[WR] "..charName.." Script", drop = {"Release_"..self.scriptVersion}})
         --
         self.menuLoadRequired = true
         Callback.Add("Tick", function() self:MenuLoad() end)
@@ -126,7 +126,7 @@
                 else
                     insert(self.Enemies, hero)
                     Interrupter:AddToMenu(hero, Menu.E.Interrupt)
-                    Menu.R.Heroes:MenuElement({id = charName, name = charName, value = false, leftIcon = "https://raw.githubusercontent.com/HiImWeedle/GoS/master/Icons/Champs/"..charName..".png"})
+                    Menu.R.Heroes:MenuElement({id = charName, name = charName, value = false, leftIcon = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/champions/"..charName..".png"})
                 end
             end
             if #Menu.E.Interrupt == 0 then

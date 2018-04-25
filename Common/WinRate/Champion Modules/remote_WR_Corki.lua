@@ -105,7 +105,7 @@
         Menu.R:MenuElement({name = " ", drop = {"Misc"}})
         Menu.R:MenuElement({id = "KS", name = "Use in KS", value = true})
         Menu.R:MenuElement({id = "Auto", name = "Auto Use on Immobile", value = true})
-        Menu:MenuElement({name = "[WR] "..char_name.." Script", drop = {"Release_"..self.scriptVersion}})
+        Menu:MenuElement({name = "[WR] "..charName.." Script", drop = {"Release_"..self.scriptVersion}})
     end
 
     function Corki:OnTick()         

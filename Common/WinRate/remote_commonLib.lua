@@ -7,23 +7,24 @@
 
   	require "MapPositionGOS"
   	require "DamageLib"    
-  	require "2DGeometry"
-    --
-    local huge  = math.huge
-    local pi    = math.pi
+  	require "2DGeometry"    
+
+--
+    local huge = math.huge
+    local pi = math.pi
     local floor = math.floor 
-    local ceil  = math.ceil 
-    local sqrt  = math.sqrt 
-    local max   = math.max 
-    local min   = math.min 
+    local ceil = math.ceil 
+    local sqrt = math.sqrt 
+    local max = math.max 
+    local min = math.min 
     --
     local lenghtOf = math.lenghtOf
-    local abs      = math.abs 
-    local deg      = math.deg 
-    local cos      = math.cos 
-    local sin      = math.sin 
-    local acos     = math.acos 
-    local atan     = math.atan 
+    local abs = math.abs 
+    local deg = math.deg 
+    local cos = math.cos 
+    local sin = math.sin 
+    local acos = math.acos 
+    local atan = math.atan 
     --
     local contains = table.contains
     local insert   = table.insert 
@@ -34,14 +35,14 @@
     local TEAM_ALLY = myHero.team 
     local TEAM_ENEMY = TEAM_JUNGLE - TEAM_ALLY
     --
-    local _STUN      = 5
-    local _TAUNT     = 8    
-    local _SLOW      = 10    
-    local _SNARE     = 11
-    local _FEAR      = 21    
-    local _CHARM     = 22
-    local _SUPRESS   = 24        
-    local _KNOCKUP   = 29
+    local _STUN = 5
+    local _TAUNT = 8    
+    local _SLOW = 10    
+    local _SNARE = 11
+    local _FEAR = 21    
+    local _CHARM = 22
+    local _SUPRESS = 24        
+    local _KNOCKUP = 29
     local _KNOCKBACK = 30 
     --
     local Vector       = Vector
@@ -50,37 +51,36 @@
     local IsKeyDown    = Control.IsKeyDown
     local SetCursorPos = Control.SetCursorPos
     --
-    local GameCanUseSpell = Game.CanUseSpell
-    local Timer           = Game.Timer
-    local Latency         = Game.Latency
-    local HeroCount       = Game.HeroCount
-    local Hero            = Game.Hero
-    local MinionCount     = Game.MinionCount
-    local Minion          = Game.Minion
-    local TurretCount     = Game.TurretCount
-    local Turret          = Game.Turret
-    local WardCount       = Game.WardCount
-    local Ward            = Game.Ward
-    local ObjectCount     = Game.ObjectCount
-    local Object          = Game.Object
-    local MissileCount    = Game.MissileCount
-    local Missile         = Game.Missile
-    local ParticleCount   = Game.ParticleCount
-    local Particle        = Game.Particle 
+    local GameCanUseSpell      = Game.CanUseSpell
+    local Timer                = Game.Timer
+    local Latency              = Game.Latency
+    local HeroCount            = Game.HeroCount
+    local Hero                 = Game.Hero
+    local MinionCount          = Game.MinionCount
+    local Minion               = Game.Minion
+    local TurretCount          = Game.TurretCount
+    local Turret               = Game.Turret
+    local WardCount            = Game.WardCount
+    local Ward                 = Game.Ward
+    local ObjectCount          = Game.ObjectCount
+    local Object               = Game.Object
+    local MissileCount         = Game.MissileCount
+    local Missile              = Game.Missile
+    local ParticleCount        = Game.ParticleCount
+    local Particle             = Game.Particle 
     --
-    local DrawCircle  = Draw.Circle    
-    local DrawLine    = Draw.Line
-    local DrawColor   = Draw.Color
-    local DrawMap     = Draw.CircleMinimap
-    local DrawText    = Draw.Text
+    local DrawCircle               = Draw.Circle    
+    local DrawLine                 = Draw.Line
+    local DrawColor                = Draw.Color
+    local DrawMap                  = Draw.CircleMinimap
+    local DrawText                 = Draw.Text
     --
-    local barHeight  = 8
-    local barWidth   = 103
+    local barHeight = 8
+    local barWidth = 103
     local barXOffset = 18                            
     local barYOffset = 2
 
     --<Interfaces Control>
-
     if not SDK then
         local res, str = Game.Resolution(), "PLEASE ENABLE ICS ORBWALKER"
         Callback.Add("Draw", function()                       
@@ -88,7 +88,6 @@
         end)
         return 
     end
-    
     local _ENV = _G
     local SDK               = _G.SDK
     local Orbwalker         = SDK.Orbwalker 
@@ -96,8 +95,7 @@
     local TargetSelector    = SDK.TargetSelector
     local HealthPrediction  = SDK.HealthPrediction
     --local Prediction     = Pred --Wont work cuz its being initialized before the class
-
-    --</Interfaces Control>
+   --</Interfaces Control>
 
     --<IOrbwalker>
 
@@ -219,12 +217,13 @@
     
     --</IOrbwalker>
 
-    local function TextOnScreen(str)
-        local res = Game.Resolution() 
-        Callback.Add("Draw", function()                       
+    local function TextOnScreen(str) 
+        local res = Game.Resolution()  
+        Callback.Add("Draw", function()                  
             DrawText(str, 64, res.x/2-(#str * 10), res.y/2, DrawColor(255,255,0,0))
-        end)                        
+        end)
     end
+ 
 
 	local function Ready(spell)
         return GameCanUseSpell(spell) == 0
@@ -429,12 +428,12 @@
 
     local function HeroesAround(range, pos, team)
         pos = pos or myHero.pos
-        local dist = GetDistance(pos) + range + 100
+        local dist = GetDistance(pos) + range + 100        
         local result = {}
-        local heroes = (team == TEAM_ENEMY and GetEnemyHeroes(dist)) or (team == TEAM_ALLY and GetAllyHeroes(dist) or GetHeroes(dist))
+        local heroes = (team == TEAM_ENEMY and GetEnemyHeroes(dist)) or (team == TEAM_ALLY and GetAllyHeroes(dist) or GetHeroes(dist))        
         for i = 1, #heroes do
-            local m = heroes[i]
-            if h and m.team == team and h.isValid and h.visible and not h.dead and GetDistance(pos, h.pos) <= range then
+            local h = heroes[i]
+            if GetDistance(pos, h.pos) <= range then
                 result[#result+1] = h
             end
         end
@@ -580,13 +579,12 @@
         local heroList = lst and lst[1] and (lst[1].type == myHero.type)
         local range = spell.Range or 2000
         local radius = spell.Radius or 50
-        if not lst or #lst == 0 then 
-            if sTar then return Prediction:GetBestCastPosition(sTar,spell) end
-            return 
+        if sTar and (not lst or #lst == 0) then 
+            return Prediction:GetBestCastPosition(sTar,spell), 1
         end
         --
         for i = 1, #lst do 
-            if GetDistanceSqr(lst[i]) <= range * range then
+            if IsValidTarget(lst[i], range) then
                 local org = heroList and Prediction:GetBestCastPosition(lst[i],spell) or lst[i].pos
                 average.x = average.x + org.x 
                 average.z = average.z + org.z 

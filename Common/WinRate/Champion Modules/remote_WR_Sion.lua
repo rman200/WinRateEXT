@@ -120,7 +120,7 @@
         Menu.E:MenuElement({id = "Flee", name = "Use on Flee", value = true})     
         --R--
         Menu.R:MenuElement({name = "Spell Not Supported", drop = {" "}})
-        Menu:MenuElement({name = "[WR] "..char_name.." Script", drop = {"Release_"..self.scriptVersion}})
+        Menu:MenuElement({name = "[WR] "..charName.." Script", drop = {"Release_"..self.scriptVersion}})
         --        
     end
     

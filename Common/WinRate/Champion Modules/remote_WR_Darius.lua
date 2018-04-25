@@ -103,7 +103,7 @@
         Menu.Items:MenuElement({id = "Youmuu", name = "Use Youmuu's", value = true}) 
         --Misc--
         Menu.Draw:MenuElement({id = "Helper", name = "Draw Q Helper Pos", value = true, leftIcon = icons.WR})
-        Menu:MenuElement({name = "[WR] "..char_name.." Script", drop = {"Release_"..self.scriptVersion}})
+        Menu:MenuElement({name = "[WR] "..charName.." Script", drop = {"Release_"..self.scriptVersion}})
         --
         self.menuLoadRequired = true
         Callback.Add("Tick", function() self:MenuLoad() end)
@@ -123,10 +123,12 @@
                     Interrupter:AddToMenu(hero, Menu.E.Interrupt)                    
                 end
             end
-            if #Menu.E.Interrupt == 0 then
+            local count = 0
+            for _ in pairs(Menu.E.Interrupt) do count = count+1 end
+            if count == 1 then
                 Menu.E.Interrupt:MenuElement({name = "No Spells To Be Interrupted", drop = {" "}})
                 Callback.Del("Tick", function() Interrupter:OnTick() end)
-            end           
+            end            
             Menu.E.Interrupt.Loading:Hide(true)
             self.menuLoadRequired = nil         
         else

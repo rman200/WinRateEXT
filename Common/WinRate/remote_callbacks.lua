@@ -284,10 +284,9 @@
     end
     
     function Interrupter:AddToMenu(unit, menu)
-        self.menu = menu
-        if unit then
-            for i=1, #(self.spells) do
-                local spells = self.spells[i]
+        self.menu = menu        
+        if unit then            
+            for k, spells in pairs(self.spells) do
                 if spells.Name == unit.charName then
                     self.menu:MenuElement({id = spells.spellname, name = spells.Name .. " | " .. spells.displayname, value = true})
                 end
