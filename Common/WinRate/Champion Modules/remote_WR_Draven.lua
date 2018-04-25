@@ -129,10 +129,12 @@
                     Menu.R.Heroes:MenuElement({id = charName, name = charName, value = false, leftIcon = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/champions/"..charName..".png"})
                 end
             end
-            if #Menu.E.Interrupt == 0 then
+            local count = -13
+            for _ in pairs(Menu.E.Interrupt) do count = count+1 end
+            if count == 1 then
                 Menu.E.Interrupt:MenuElement({name = "No Spells To Be Interrupted", drop = {" "}})
                 Callback.Del("Tick", function() Interrupter:OnTick() end)
-            end            
+            end             
             Menu.R.Heroes.Loading:Hide(true)
             Menu.E.Interrupt.Loading:Hide(true)
             self.menuLoadRequired = nil         

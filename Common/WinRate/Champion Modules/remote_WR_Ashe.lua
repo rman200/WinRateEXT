@@ -131,8 +131,8 @@
                 end
             end
             --
-            local count = 0
-            for _ in pairs(Menu.R.Interrupt) do count = count+1 end
+            local count = -13
+            for _ in pairs(Menu.R.Interrupt) do count = count+1 end            
             if count == 1 then
                 Menu.R.Interrupt:MenuElement({name = "No Spells To Be Interrupted", drop = {" "}})
                 Callback.Del("Tick", function() Interrupter:OnTick() end)

@@ -123,7 +123,7 @@
                     Interrupter:AddToMenu(hero, Menu.E.Interrupt)                    
                 end
             end
-            local count = 0
+            local count = -13
             for _ in pairs(Menu.E.Interrupt) do count = count+1 end
             if count == 1 then
                 Menu.E.Interrupt:MenuElement({name = "No Spells To Be Interrupted", drop = {" "}})
