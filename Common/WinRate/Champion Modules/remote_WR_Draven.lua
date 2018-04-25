@@ -284,7 +284,7 @@
             for i=1, #(self.enemies) do
                 local enemy = self.enemies[i]
                 local hp = enemy.health + enemy.shieldAD                                            
-                if self.R:GetDamage(enemy) * 2 >= hp and (hp >= 100 or HeroesAround(600, enemy.pos, TEAM_ALLY == 0)) then
+                if self.R:GetDamage(enemy) * 2 >= hp and (hp >= 100 or HeroesAround(600, enemy.pos, TEAM_ALLY) == 0) then
                     if self.R:CastToPred(enemy, 2) then
                         self:CallUltBack(enemy)
                         break

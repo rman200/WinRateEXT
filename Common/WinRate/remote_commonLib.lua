@@ -427,10 +427,6 @@
         return unit.range + unit.boundingRadius + extra
     end
 
-    local function CountEnemiesAround(pos, range)
-        return #HeroesAround(range, pos, TEAM_ENEMY)
-    end
-
     local function HeroesAround(range, pos, team)
         pos = pos or myHero.pos
         local dist = GetDistance(pos) + range + 100
@@ -443,6 +439,10 @@
             end
         end
         return result
+    end
+
+    local function CountEnemiesAround(pos, range)
+        return #HeroesAround(range, pos, TEAM_ENEMY)
     end 
 
     local function MinionsAround(range, pos, team)
@@ -460,12 +460,32 @@
     end
 
     local function IsUnderTurret(pos, team)
-        local turrets = GetTurrets(1000)
+        local turrets = GetTurrets(GetDistance(pos) + 1000)
         for i=1, #turrets do
-            if GetDistance(turrets[i]) <= 915 and turret.team == team then
-                return true
+            local turret = turrets[i]
+            if GetDistance(turret, pos) <= 915 and turret.team == team then
+                return turret
             end
         end        
+    end
+
+    local function GetDanger(pos)
+        local result = 0
+        --
+        local turret = IsUnderTurret(pos, TEAM_ENEMY)
+        if turret then
+            result = result + floor((915-GetDistance(turret, pos))/17.3)
+        end
+        --
+        local nearby = HeroesAround(700, pos, TEAM_ENEMY)
+        for i=1, #nearby do
+            local enemy = nearby[i]
+            local dist, mod = GetDistance(enemy, pos), enemy.range < 350 and 2 or 1
+            result = result + (dist <= GetTrueAttackRange(enemy) and 5 or 0) * mod
+        end
+        --
+        result = result + #HeroesAround(400, pos, TEAM_ENEMY) * 1
+        return result
     end
 
     local function IsImmobile(unit, delay) 
