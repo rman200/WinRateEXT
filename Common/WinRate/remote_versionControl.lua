@@ -1,20 +1,28 @@
 Data = {
     Champions = {
+        Ashe = {
+            Version = 1.01,
+            Changelog = "Ashe Changelog Here",
+        },
         Corki = {
             Version = 1.02,
             Changelog = "Corki Changelog Here",
         },
-        Ashe = {
-            Version = 1.01,
-            Changelog = "Ashe Changelog Here",
+        Darius = {
+            Version = 1.02,
+            Changelog = "Darius Changelog Here",
         },
         Draven = {
             Version = 1.02,
             Changelog = "Draven Changelog Here",
         },
-        Darius = {
-            Version = 1.02,
-            Changelog = "Darius Changelog Here",
+        Ezreal = {
+            Version = 1.00,
+            Changelog = "Ezreal Changelog Here",
+        },
+        Jax = {
+            Version = 1.00,
+            Changelog = "Jax Changelog Here",
         },
         Sion = {
             Version = 1.02,
@@ -24,13 +32,17 @@ Data = {
             Version = 1.05,
             Changelog = "Vladimir Changelog Here",
         },
+        Xayah = {
+            Version = 1.00,
+            Changelog = "Xayah Changelog Here",
+        },
     },
     Loader = {
         Version = 1,
     },
     Dependencies = {
         commonLib = {
-            Version = 1.04,
+            Version = 1.05,
         },
         prediction = {
             Version = 1,
