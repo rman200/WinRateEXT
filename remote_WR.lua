@@ -98,7 +98,7 @@
             if currentData.Loader.Version < latestData.Loader.Version then
                 DownloadFile(SCRIPT_URL, SCRIPT_PATH, "WR.lua")        
                 currentData.Loader.Version = latestData.Loader.Version
-                TextOnScreen("Please Reload The Script! [F6]x2")
+                TextOnScreen("Please Reload The Script! [F6]x2")                
             end
             --[[Core Check]]
             if currentData.Core.Version < latestData.Core.Version then
@@ -109,6 +109,7 @@
             --[[Active Champ Module Check]]            
             if not currentData.Champions[charName] or currentData.Champions[charName].Version < latestData.Champions[charName].Version then
                 DownloadFile(CHAMP_URL, CHAMP_PATH, "WR_"..charName..dotlua)
+                currentData.Champions[charName] = {}
                 currentData.Champions[charName].Version = latestData.Champions[charName].Version
                 currentData.Champions[charName].Changelog = latestData.Champions[charName].Changelog
             end
