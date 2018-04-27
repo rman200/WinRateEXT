@@ -1,34 +1,9 @@
-    local char_name, summoner_name, myId = myHero.charName, myHero.name, myHero.networkID
-    --
-    local huge, pi, floor, ceil, sqrt, max, min = math.huge, math.pi, math.floor, math.ceil, math.sqrt, math.max, math.min 
-    --
-    local lenghtOf, abs, deg, cos, sin, acos, atan = math.lenghtOf, math.abs, math.deg, math.cos, math.sin, math.acos, math.atan 
-    --
-    local contains, insert, remove = table.contains, table.insert, table.remove
-    --
-    local TEAM_JUNGLE, TEAM_ALLY, TEAM_ENEMY = 300, myHero.team, 300 - myHero.team
-    --
-    local _STUN, _TAUNT, _SLOW, _SNARE, _FEAR, _CHARM, _SUPRESS, _KNOCKUP, _KNOCKBACK = 5, 8, 10, 11, 21, 22, 24, 29, 30
-    --
-    local Vector, KeyDown, KeyUp    = Vector, Control.KeyDown, Control.KeyUp
-    --
-    local DrawCircle, DrawLine, DrawColor = Draw.Circle, Draw.Line, Draw.Color
-    --
-    local barHeight, barWidth, barYOffset = 8, 103, -8
-    --
-    local Timer                   = Game.Timer
-    local Hero, HeroCount         = Game.Hero, Game.HeroCount
-    local Ward, WardCount         = Game.Ward, Game.WardCount
-    local Minion, MinionCount     = Game.Minion, Game.MinionCount    
-    local Turret, TurretCount     = Game.Turret, Game.TurretCount
-    local Object, ObjectCount     = Game.Object, Game.ObjectCount
-    local Missile, MissileCount   = Game.Missile, Game.MissileCount
-    local Particle, ParticleCount = Game.Particle, Game.ParticleCount
 
     class 'Ezreal'  
 
     function Ezreal:__init()
         --[[Data Initialization]]
+        self.lastAttacked = myHero
         self.scriptVersion = "1.0"
         self:Spells()
         self:Menu() 
@@ -80,10 +55,20 @@
             Range = 2000, --reduced on purpose
             Delay = 1,
             Speed = 2000,
-            Width = 160,
+            Width = 205,
             Collision = false,
             From = myHero,
             Type = "SkillShot"
+        })
+        self.Escape = Spell({
+            Slot = nil,
+            Range = 2000, --reduced on purpose
+            Delay = 1,
+            Speed = 2000,
+            Radius = 2000,
+            Collision = false,
+            From = myHero,
+            Type = "AOE"
         })
     end
 
@@ -99,7 +84,6 @@
         Menu.Q:MenuElement({id = "LastHit", name = "Use to LastHit", value = false})
         Menu.Q:MenuElement({id = "Jungle", name = "Use on JungleClear", value = false})
         Menu.Q:MenuElement({id = "Clear", name = "Use on LaneClear", value = false})
-        Menu.Q:MenuElement({id = "Min", name = "Minions To Cast", value = 3, min = 0, max = 6, step = 1})
         Menu.Q:MenuElement({id = "ManaClear", name = "Min Mana %", value = 15, min = 0, max = 100, step = 1})
         Menu.Q:MenuElement({name = " ", drop = {"Misc"}})
         Menu.Q:MenuElement({id = "KS", name = "Use to KS", value = true})       
@@ -120,7 +104,7 @@
         Menu.E:MenuElement({id = "Gapcloser", name = "Use on Gapcloser", value = true})
         --R--
         Menu.R:MenuElement({name = " ", drop = {"Combo Settings"}})
-        Menu.R:MenuElement({id = "Count", name = "Use When X Enemies", value = 2, min = 1, max = 5, step = 1})
+        Menu.R:MenuElement({id = "Combo", name = "Use When X Enemies", value = 2, min = 0, max = 5, step = 1})
         Menu.R:MenuElement({id = "Mana", name = "Min Mana %", value = 0, min = 0, max = 100, step = 1})
         Menu.R:MenuElement({name = " ", drop = {"Misc"}})
         Menu.R:MenuElement({id = "KS", name = "Use to KS", value = true})
@@ -132,7 +116,7 @@
     function Ezreal:OnTick() 
         if ShouldWait() then return end 
         --        
-        self.enemies = GetEnemyHeroes(self.Q.Range)
+        self.enemies = GetEnemyHeroes(2000)
         self.target = GetTarget(GetTrueAttackRange(myHero), 0)
         self.mode = GetMode() 
         --               
@@ -161,15 +145,16 @@
             args.Process = false 
             return
         end 
+        self.lastAttacked = args.Target
     end
 
     function Ezreal:OnPostAttack()        
         local target = GetTargetByHandle(myHero.attackData.target)
-        if ShouldWait() or not IsValidTarget(target) or not (self.Q.IsReady() or self.W.IsReady()) then return end
+        if ShouldWait() or not IsValidTarget(target) or not (self.Q:IsReady() or self.W:IsReady()) then return end
         --  
-        local isMob, isHero = tType == Obj_AI_Minion, target.type == myHero.type
+        local isMob, isHero = target.type == Obj_AI_Minion, target.type == myHero.type
         local modeCheck, manaCheck, spell
-        --
+        --        
         if isMob then            
             local laneClear, jungleClear = self.mode == 3, self.mode == 4
             modeCheck = laneClear or jungleClear
@@ -191,33 +176,42 @@
     end
 
     function Ezreal:OnDash(unit, unitPos, unitPosTo, dashSpeed, dashGravity, dashDistance)  
-        if ShouldWait() then return end   
-        if IsValidTarget(unit) and GetDistance(unitPosTo) < 500 and unit.team == TEAM_ENEMY and IsFacing(unit, myHero) then --Gapcloser                    
+        if ShouldWait() or not Menu.E.Gapcloser:Value() then return end   
+        if IsValidTarget(unit) and GetDistance(unitPosTo) < 200 and unit.team == TEAM_ENEMY and IsFacing(unit, myHero) then --Gapcloser                        
+            local bestPos = self:GetBestPos()
+            if bestPos then
+                self.E:Cast(bestPos)
+            end            
         end
     end 
 
     function Ezreal:Auto() 
         local eMode = Menu.E.Mode:Value() 
-        if self.mode ~= 1 or eMode == 0 then return end
-        --
-        if eMode == 1 then
+        if self.mode ~= 1 or eMode == 1 then return end
+        --        
+        if eMode == 2 then
             local eTarget = GetTarget(self.E.Range + self.Q.Range, 0)
-            if #self.enemies == 0 and eTarget then
+            if eTarget and #GetEnemyHeroes(600) == 0 then
                 self.E:Cast(eTarget)
             end
-        elseif eMode == 2 then 
+        elseif eMode == 3 then 
             local eTarget = GetTarget(self.E.Range, 0)
-            if #self.enemies == 0 and eTarget then
-                self.E:Cast(eTarget)
+            if eTarget and GetDanger(myHero.pos) > 0 then                
+                local temp = self:GetBestPos()
+                if temp then
+                    self.E:Cast(temp)
+                end
             end
         end
     end
 
-    function Ezreal:Combo() 
-        if Menu.R.Mode:Value() and self.R:IsReady() and ManaPercent(myHero) >= Menu.R.Mana:Value() then 
-            local rTarget = GetTarget(self.R.Range, 1)
-            if target == nil then return end
-            self:CastR(target)
+    function Ezreal:Combo()        
+        if self.enemies and #self.enemies ~= 0 and Menu.R.Combo:Value() ~= 0 and self.R:IsReady() and ManaPercent(myHero) >= Menu.R.Mana:Value() then
+            local bestPos, hit = GetBestLinearCastPos(self.R, nil, self.enemies)                        
+            if bestPos and hit >= Menu.R.Combo:Value() then
+
+                self.R:Cast(bestPos)
+            end
         end  
         --
         local qTarget = GetTarget(self.Q.Range, 0) 
@@ -245,12 +239,37 @@
     end
 
     function Ezreal:LastHit()        
+        if Menu.Q.KS:Value() and self.Q:IsReady() then 
+            local busy = myHero.attackData.state == STATE_WINDDOWN 
+            local minions = GetEnemyMinions(self.Q.Range)          
+            for i=1, #minions do
+                local minion = minions[i]  
+                local hp = GetHealthPrediction(minion, self.Q.Delay + GetDistance(minion)/self.Q.Speed)              
+                if (minion.networkID ~= self.lastAttacked.networkID) and (busy or GetDistance(minion) >= GetTrueAttackRange(myHero)) and hp >= 20 and self.Q:GetDamage(minion) >= hp and #mCollision(myHero.pos, minion.pos, self.Q, minions) == 0 then
+                    self.Q:Cast(minion); return
+                end
+            end
+        end       
     end
 
     function Ezreal:KillSteal()
+        local ksQ, ksW, ksR =  Menu.Q.KS:Value() and self.Q:IsReady(),  Menu.W.KS:Value() and self.W:IsReady(),  Menu.R.KS:Value() and self.R:IsReady()
+        if ksQ or ksW or ksR then            
+            for i=1, #self.enemies do
+                local targ = self.enemies[i]                 
+                local hp, dist = targ.health, GetDistance(targ)
+                if (ksW and self.W:GetDamage(targ) >= hp) then
+                    if self.W:CastToPred(targ, 2) then return end                
+                elseif (ksQ and self.Q:GetDamage(targ) >= hp) then
+                    if self.Q:CastToPred(targ, 2) then return end                
+                elseif (ksR and self.R:GetDamage(targ) >= hp and (hp >= 200 or HeroesAround(600, targ.pos, TEAM_ALLY) == 0)) then
+                    if self.R:CastToPred(targ, 3) then return end
+                end
+            end
+        end
     end
 
-    function Ezreal:OnDraw()
+    function Ezreal:OnDraw()    
         local drawSettings = Menu.Draw
         if drawSettings.ON:Value() then            
             local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113)
@@ -258,7 +277,7 @@
             local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
             local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)
             local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0))
-            if self.enemies and drawSettings.Dmg:Value() then
+            if self.enemies and drawSettings.Dmg:Value() then           
                 for i=1, #self.enemies do
                     local enemy = self.enemies[i]                    
                     self.R:DrawDmg(enemy, 1, 0)
@@ -267,12 +286,37 @@
         end    
     end
 
-    function Ezreal:GetBestPos()
-        local hPos = myHero.pos
+    --function Ezreal:GetBestPos()
+    --    local nearby = GetEnemyHeroes(2000)
+    --    for k, v in pairs(GetEnemyTurrets(2000)) do nearby[#nearby+1] = v end
+    --    local mostDangerous = GetBestCircularCastPos(self.Escape, nil, nearby)
+    --    local pos = (myHero.pos):Extended(mostDangerous, -self.E.Range) --farthest possible from most dangerous
+    --    if GetDanger(myHero.pos) > GetDanger(pos) + 5 then
+    --        DrawCircle(pos, 10)
+    --        return pos
+    --    end
+    --end
+
+    function Ezreal:GetBestPos()        
+        local hPos, result = myHero.pos , {}
         local offset, rotateAngle = hPos + Vector(0, 0, self.E.Range), rotateAngle/360 * pi 
         --
-        for i=0, 360, 20 do
+        for i=0, 360, 40 do
             local pos = RotateAroundPoint(offset, hPos, i*pi/180)
-            DrawCircle(pos, 50)
+            result[#result+1] = {pos, GetDanger(pos)}            
         end
+        sort(result, function(a,b) 
+            if MapPosition:inWall(a[1]) then
+                return false
+            end
+            if a[2] ~= b[2] then
+                return a[2] < b[2] 
+            else
+                return GetDistance(a[1], mousePos) < GetDistance(b[1], mousePos)
+            end
+        end)
+        return result[1][2] == 0 and result[1][1]
     end
+
+
+    Ezreal()

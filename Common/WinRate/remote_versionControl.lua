@@ -17,7 +17,7 @@ Data = {
             Changelog = "Draven Changelog Here",
         },
         Ezreal = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Ezreal Changelog Here",
         },
         Jax = {
