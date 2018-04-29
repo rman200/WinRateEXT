@@ -76,9 +76,11 @@
         --Q--
         Menu.Q:MenuElement({name = " ", drop = {"Combo Settings"}})
         Menu.Q:MenuElement({id = "Combo", name = "Use on Combo", value = true})
+        Menu.Q:MenuElement({id = "Pred", name = "Prediction Mode", value = 1, drop = {"Faster", "More Precise"}})
         Menu.Q:MenuElement({id = "Mana", name = "Min Mana %", value = 15, min = 0, max = 100, step = 1})
         Menu.Q:MenuElement({name = " ", drop = {"Harass Settings"}})
         Menu.Q:MenuElement({id = "Harass", name = "Use on Harass", value = true})
+        Menu.Q:MenuElement({id = "PredHarass", name = "Prediction Mode", value = 2, drop = {"Faster", "More Precise"}})
         Menu.Q:MenuElement({id = "ManaHarass", name = "Min Mana %", value = 15, min = 0, max = 100, step = 1})
         Menu.Q:MenuElement({name = " ", drop = {"Farm Settings"}})
         Menu.Q:MenuElement({id = "LastHit", name = "Use to LastHit", value = false})
@@ -214,10 +216,10 @@
             end
         end  
         --
-        local qTarget = GetTarget(self.Q.Range, 0) 
+        local qTarget, qPred = GetTarget(self.Q.Range, 0), Menu.Q.Pred:Value()
         if IsValidTarget(qTarget) and GetDistance(qTarget) >= GetTrueAttackRange(myHero) then
             if Menu.Q.Combo:Value() and self.Q:IsReady() and ManaPercent(myHero) >= Menu.Q.Mana:Value() then             
-                self.Q:CastToPred(qTarget, 2)
+                self.Q:CastToPred(qTarget, qPred)
             elseif Menu.W.Combo:Value() and self.W:IsReady() and ManaPercent(myHero) >= Menu.W.Mana:Value() and GetDistance(qTarget) <= self.W.Range then             
                 self.W:CastToPred(qTarget, 2)
             end
@@ -225,10 +227,10 @@
     end
 
     function Ezreal:Harass() 
-        local qTarget = GetTarget(self.Q.Range, 0) 
+        local qTarget, qPred = GetTarget(self.Q.Range, 0), Menu.Q.PredHarass:Value()
         if IsValidTarget(qTarget) and GetDistance(qTarget) >= GetTrueAttackRange(myHero) then
             if Menu.Q.Harass:Value() and self.Q:IsReady() and ManaPercent(myHero) >= Menu.Q.ManaHarass:Value() then             
-                self.Q:CastToPred(qTarget, 2)
+                self.Q:CastToPred(qTarget, qPred)
             elseif Menu.W.Harass:Value() and self.W:IsReady() and ManaPercent(myHero) >= Menu.W.ManaHarass:Value() and GetDistance(qTarget) <= self.W.Range then             
                 self.W:CastToPred(qTarget, 2)
             end

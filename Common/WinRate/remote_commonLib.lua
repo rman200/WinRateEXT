@@ -752,10 +752,10 @@
         local pos  = castOn.x and castOn
         local targ = castOn.health and castOn 
         --           
-        if self.Type == "AOE" and targ then
-            local bestPos, hit = self:GetBestCircularCastPos(targ, GetEnemyHeroes(self.Range+self.Radius))
-            pos = hit >= 2 and bestPos or pos
-        end
+        --if self.Type == "AOE" and targ then
+        --    local bestPos, hit = self:GetBestCircularCastPos(targ, GetEnemyHeroes(self.Range+self.Radius))
+        --    pos = hit >= 2 and bestPos or pos
+        --end
         --        
         if (targ and not targ.pos:To2D().onScreen) then
             return  

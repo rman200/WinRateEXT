@@ -268,7 +268,7 @@
             local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
             local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
             local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)
-            local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius*2, DrawColor(255,255,0,0))
+            local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0))
             if self.enemies and drawSettings.Dmg:Value() then
                 for i=1, #self.enemies do
                     local enemy = self.enemies[i]

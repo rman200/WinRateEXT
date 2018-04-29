@@ -5,7 +5,7 @@ Data = {
             Changelog = "Ashe Changelog Here",
         },
         Corki = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Corki Changelog Here",
         },
         Darius = {
@@ -17,7 +17,7 @@ Data = {
             Changelog = "Draven Changelog Here",
         },
         Ezreal = {
-            Version = 1.01,
+            Version = 1.02,
             Changelog = "Ezreal Changelog Here",
         },
         Jax = {
@@ -42,7 +42,7 @@ Data = {
     },
     Dependencies = {
         commonLib = {
-            Version = 1.05,
+            Version = 1.06,
         },
         prediction = {
             Version = 1,
