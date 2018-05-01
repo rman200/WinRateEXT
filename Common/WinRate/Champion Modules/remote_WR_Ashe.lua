@@ -222,7 +222,7 @@
         if ShouldWait() or not (Menu.R.Gapcloser:Value() and self.R:IsReady()) then return end
         --   
         if IsValidTarget(unit, 600) and unit.team == TEAM_ENEMY and IsFacing(unit, myHero) then --Gapcloser 
-            self.R:CastToPred(target, 3)        
+            self.R:CastToPred(unit, 3)        
         end
     end
 

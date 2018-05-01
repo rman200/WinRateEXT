@@ -1,7 +1,7 @@
 Data = {
     Champions = {
         Ashe = {
-            Version = 1.01,
+            Version = 1.02,
             Changelog = "Ashe Changelog Here",
         },
         Corki = {
