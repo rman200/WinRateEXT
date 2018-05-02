@@ -768,6 +768,8 @@
     end
 
     function Spell:CastToPred(target, minHitchance)
+        if not target then return end
+        --
         local predPos, castPos, hC = self:GetPrediction(target)        
         if predPos and hC >= minHitchance then                         
             return self:Cast(predPos)            
