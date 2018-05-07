@@ -1,40 +1,44 @@
 Data = {
     Champions = {
         Ashe = {
-            Version = 1.02,
-            Changelog = "Ashe Changelog Here",
+            Version = 1.03,
+            Changelog = "Ashe Initial Release",
         },
         Corki = {
-            Version = 1.03,
-            Changelog = "Corki Changelog Here",
+            Version = 1.04,
+            Changelog = "Corki Initial Release",
         },
         Darius = {
-            Version = 1.02,
-            Changelog = "Darius Changelog Here",
+            Version = 1.03,
+            Changelog = "Darius Initial Release",
         },
         Draven = {
-            Version = 1.02,
-            Changelog = "Draven Changelog Here",
+            Version = 1.03,
+            Changelog = "Draven Initial Release",
         },
         Ezreal = {
-            Version = 1.02,
-            Changelog = "Ezreal Changelog Here",
+            Version = 1.03,
+            Changelog = "Ezreal Initial Release",
         },
         Jax = {
-            Version = 1.00,
-            Changelog = "Jax Changelog Here",
+            Version = 1.01,
+            Changelog = "Jax Initial Release",
         },
         Sion = {
-            Version = 1.02,
-            Changelog = "Sion Changelog Here",
+            Version = 1.03,
+            Changelog = "Sion Initial Release",
+        },
+        Twitch = {
+            Version = 1.00,
+            Changelog = "Twitch Initial Release",
         },
         Vladimir = {
-            Version = 1.05,
-            Changelog = "Vladimir Changelog Here",
+            Version = 1.06,
+            Changelog = "Vladimir Initial Release",
         },
         Xayah = {
-            Version = 1.00,
-            Changelog = "Xayah Changelog Here",
+            Version = 1.01,
+            Changelog = "Xayah Initial Release",
         },
     },
     Loader = {
@@ -72,8 +76,14 @@ Data = {
         },
     },
     Core = {
-        Version = 0,
-        Changelog = "WR Version ChangeLog Here",
+        Version = 1.00,
+        Changelog = 
+            "Welcome to Project WinRate - The Most Advanced Script to ever hit EXT!\n\n"..
+            "We aim to deliver the best scripting experience possible through our\n"..
+            "solid developers experience and HQ codebase, where creativity reigns\n" ..
+            "over most limitations brought by an External Platform. \n\n" ..
+            "Thanks to the seamless implementation of our AutoUpdate system we can\n"..
+            "ensure you're always up to date with impacting your gaming experience!",
     },
 }
 
