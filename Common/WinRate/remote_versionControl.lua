@@ -1,44 +1,40 @@
 Data = {
     Champions = {
         Ashe = {
-            Version = 1.03,
-            Changelog = "Ashe Initial Release",
+            Version = 1.02,
+            Changelog = "Ashe Changelog Here",
         },
         Corki = {
-            Version = 1.04,
-            Changelog = "Corki Initial Release",
+            Version = 1.03,
+            Changelog = "Corki Changelog Here",
         },
         Darius = {
-            Version = 1.03,
-            Changelog = "Darius Initial Release",
+            Version = 1.02,
+            Changelog = "Darius Changelog Here",
         },
         Draven = {
-            Version = 1.03,
-            Changelog = "Draven Initial Release",
+            Version = 1.02,
+            Changelog = "Draven Changelog Here",
         },
         Ezreal = {
-            Version = 1.03,
-            Changelog = "Ezreal Initial Release",
+            Version = 1.02,
+            Changelog = "Ezreal Changelog Here",
         },
         Jax = {
-            Version = 1.01,
-            Changelog = "Jax Initial Release",
+            Version = 1.00,
+            Changelog = "Jax Changelog Here",
         },
         Sion = {
-            Version = 1.03,
-            Changelog = "Sion Initial Release",
-        },
-        Twitch = {
-            Version = 1.00,
-            Changelog = "Twitch Initial Release",
+            Version = 1.02,
+            Changelog = "Sion Changelog Here",
         },
         Vladimir = {
-            Version = 1.06,
-            Changelog = "Vladimir Initial Release",
+            Version = 1.05,
+            Changelog = "Vladimir Changelog Here",
         },
         Xayah = {
-            Version = 1.01,
-            Changelog = "Xayah Initial Release",
+            Version = 1.00,
+            Changelog = "Xayah Changelog Here",
         },
     },
     Loader = {
@@ -76,14 +72,8 @@ Data = {
         },
     },
     Core = {
-        Version = 1.00,
-        Changelog = 
-            "Welcome to Project WinRate - The Most Advanced Script to ever hit EXT!\n\n"..
-            "We aim to deliver the best scripting experience possible through our\n"..
-            "solid developers experience and HQ codebase, where creativity reigns\n" ..
-            "over most limitations brought by an External Platform. \n\n" ..
-            "Thanks to the seamless implementation of our AutoUpdate system we can\n"..
-            "ensure you're always up to date with impacting your gaming experience!",
+        Version = 0,
+        Changelog = "WR Version ChangeLog Here",
     },
 }
 
