@@ -114,13 +114,14 @@
                 currentData.Champions[charName].Changelog = latestData.Champions[charName].Changelog
             end
             --[[Dependencies Check]]
-            for k,v in pairs(latestData.Dependencies) do
+            for k,v in pairs(latestData.Dependencies) do                
                 if not currentData.Dependencies[k] or currentData.Dependencies[k].Version < v.Version then
                     DownloadFile(WR_URL, WR_PATH, k..dotlua)
+                    currentData.Dependencies[k] = {}
                     currentData.Dependencies[k].Version = v.Version
                 end
                 local name = tostring(k)
-                if v.Version >=1 and name ~= "commonLib" then
+                if v.Version >=1 and name ~= "commonLib" and name ~= "changelog" then
                     shouldLoad[#shouldLoad+1] = name
                 end
             end
@@ -128,6 +129,7 @@
             for k,v in pairs(latestData.Utilities) do
                 if not currentData.Utilities[k] or currentData.Utilities[k].Version < v.Version then
                     DownloadFile(WR_URL, WR_PATH, k..dotlua)
+                    currentData.Utilities[k] = {}
                     currentData.Utilities[k].Version = v.Version
                 end
                 if v.Version >=1 then
@@ -172,6 +174,7 @@
     function OnLoad()   
         if AutoUpdate() then
             _G.WR_Loaded = true
+            dofile(WR_PATH.."changelog"..dotlua) 
             LoadWR()
         end
     end    

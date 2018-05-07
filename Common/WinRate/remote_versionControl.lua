@@ -42,7 +42,7 @@ Data = {
         },
     },
     Loader = {
-        Version = 1.01,
+        Version = 1.02,
     },
     Dependencies = {
         commonLib = {
