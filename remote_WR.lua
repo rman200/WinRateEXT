@@ -12,11 +12,12 @@
     local concat             = table.concat
     local rep                = string.rep 
     local format             = string.format
+    local insert             = table.insert
 
     local WR_PATH            = COMMON_PATH.."WinRate/"
     local dotlua             = ".lua" 
     local charName           = myHero.charName 
-    local shouldLoad         = {"commonLib"}
+    local shouldLoad         = {}
 
     local function readAll(file)
         local f = assert(open(file, "r"))
@@ -121,7 +122,7 @@
                     currentData.Dependencies[k].Version = v.Version
                 end
                 local name = tostring(k)
-                if v.Version >=1 and name ~= "commonLib" and name ~= "changelog" then
+                if v.Version >=1 and name ~= "commonLib" and name ~= "changelog" and name ~= "menuLoad" then
                     shouldLoad[#shouldLoad+1] = name
                 end
             end
@@ -136,7 +137,10 @@
                     shouldLoad[#shouldLoad+1] = tostring(k)
                 end
             end
-            shouldLoad[#shouldLoad+1] = "/Champion Modules/WR_"..charName
+            table.sort(shouldLoad)
+            insert(shouldLoad, 1, "commonLib")
+            insert(shouldLoad, 2, "menuLoad")
+            insert(shouldLoad, "/Champion Modules/WR_"..charName)
             UpdateVersionControl(currentData)
         end
         local function CheckSupported()
