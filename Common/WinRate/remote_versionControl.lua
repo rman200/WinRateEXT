@@ -24,6 +24,14 @@ Data = {
             Version = 1.00,
             Changelog = "Jax Initial Release",
         },
+        Lucian = {
+            Version = 1.00,
+            Changelog = "Lucian Initial Release",
+        },
+        Jhin = {
+            Version = 1.00,
+            Changelog = "Jhin Initial Release",
+        },
         Sion = {
             Version = 1.02,
             Changelog = "Sion Initial Release",
