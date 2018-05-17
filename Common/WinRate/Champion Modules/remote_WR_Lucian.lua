@@ -227,6 +227,14 @@ function Lucian:CastE(target, castMode, castRange)
 
                         self.E:Cast(castPos)
                 end
+        elseif castMode == 2 then
+                local castPos = myHero.pos:Extended(mousePos, castRange)
+                
+                self.E:Cast(castPos)
+        elseif castMode == 3 then
+                local castPos = myHero.pos:Extended(target.pos, castRange)
+                
+                self.E:Cast(castPos)
         end
 end
 
