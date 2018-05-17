@@ -444,6 +444,18 @@
         return #HeroesAround(range, pos, TEAM_ENEMY)
     end 
 
+    local function GetClosestEnemy(unit)
+        local unit = unit or myHero 
+        local closest, list = nil, GetHeroes()
+        for i=1, #list do            
+            local enemy = list[i]
+            if IsValidTarget(enemy) and enemy.team ~= unit.team and (not closest or GetDistance(enemy, unit) < GetDistance(closest, unit)) then
+                closest = enemy
+            end        
+        end
+        return closest
+    end
+
     local function MinionsAround(range, pos, team)
         pos = pos or myHero.pos
         local dist = GetDistance(pos) + range + 100
@@ -639,6 +651,18 @@
         local minions = GetEnemyMinions(spell.Range+spell.Radius)
         if #minions == 0 then return nil, 0 end
         return GetBestCircularCastPos(spell, nil, minions)
+    end
+
+    local function CircleCircleIntersection(c1, c2, r1, r2)
+        local D = GetDistance(c1, c2)
+        if D > r1 + r2 or D <= abs(r1 - r2) then return nil end
+        local A = (r1 * r2 - r2 * r1 + D * D) / (2 * D)
+        local H = sqrt(r1 * r1 - A * A)
+        local Direction = (c2 - c1):Normalized()
+        local PA = c1 + A * Direction
+        local S1 = PA + H * Direction:Perpendicular()
+        local S2 = PA - H * Direction:Perpendicular()
+        return S1, S2
     end
 
     class "Spell"

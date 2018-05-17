@@ -32,6 +32,10 @@ Data = {
             Version = 1.00,
             Changelog = "Twitch Initial Release",
         },
+        Vayne = {
+            Version = 1.00,
+            Changelog = "Vayne Initial Release",
+        },
         Vladimir = {
             Version = 1.05,
             Changelog = "Vladimir Initial Release",
@@ -46,7 +50,7 @@ Data = {
     },
     Dependencies = {
         commonLib = {
-            Version = 1.07,
+            Version = 1.08,
         },
         prediction = {
             Version = 1,
