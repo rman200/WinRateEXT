@@ -50,7 +50,7 @@ Data = {
     },
     Dependencies = {
         commonLib = {
-            Version = 1.08,
+            Version = 1.09,
         },
         prediction = {
             Version = 1,

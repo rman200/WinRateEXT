@@ -176,11 +176,11 @@
     end
 
     local function SetMovement(bool)
-        Orbwalk:SetMovement(bool)
+        Orbwalker:SetMovement(bool)
     end
 
     local function SetAttack(bool)
-        Orbwalk:SetAttack(bool)
+        Orbwalker:SetAttack(bool)
     end
 
     local function GetTarget(range, mode)     --0:Physical|1:Magical|2:True
