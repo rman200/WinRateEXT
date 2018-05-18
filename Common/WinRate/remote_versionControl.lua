@@ -29,7 +29,7 @@ Data = {
             Changelog = "Lucian Initial Release",
         },
         Jhin = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Jhin Initial Release",
         },
         Sion = {
