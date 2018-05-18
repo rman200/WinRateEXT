@@ -11,6 +11,7 @@ function Jhin:__init()
         --// Callbacks //--
 
         Callback.Add("Tick", function() self:OnTick() end)
+        Callback.Add("Draw", function() self:OnDraw() end)
         OnPreAttack(function(...) self:OnPreAttack(...) end)
         OnPostAttack(function(...) self:OnPostAttack(...) end)
         OnPreMovement(function(...) self:OnPreMovement(...) end)
