@@ -368,10 +368,9 @@ end
 
 function Lucian:OnDraw()  
         local rTarg = self.target or GetTarget(self.R.Range, 0)        
-        if Menu.R.Magnet:Value() and HasBuff(myHero, "LucianR") and rTarg then            
-            local moveVector = rTarg:GetPrediction(huge, 0.3) - rTarg.pos
-            --
-            self.moveTo = myHero.pos+moveVector    
+        if self.mode == 1 and Menu.R.Magnet:Value() and HasBuff(myHero, "LucianR") and rTarg then            
+            local enemyMovement = rTarg:GetPrediction(huge, 0.3) - rTarg.pos            
+            self.moveTo = myHero.pos+enemyMovement    
         else
             self.moveTo = nil 
         end 

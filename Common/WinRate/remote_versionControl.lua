@@ -25,7 +25,7 @@ Data = {
             Changelog = "Jax Initial Release",
         },
         Lucian = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Lucian Initial Release",
         },
         Jhin = {
