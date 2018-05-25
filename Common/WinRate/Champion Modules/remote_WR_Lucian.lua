@@ -21,6 +21,12 @@ function Lucian:Spells()
         self.Q = Spell({
                 Slot = 0,
                 Range = 650,
+                Delay = 0.35,
+                Speed = huge,
+                Radius = 30,
+                Collision = false,
+                From = myHero,
+                Type = "Targetted"
         })
 
         self.Q2 = Spell({
@@ -28,7 +34,7 @@ function Lucian:Spells()
                 Range = 900,
                 Delay = 0.35,
                 Speed = huge,
-                Radius = 12.5,
+                Radius = 30,
                 Collision = false,
                 From = myHero,
                 Type = "Targetted"
@@ -54,6 +60,11 @@ function Lucian:Spells()
         self.R = Spell({
                 Slot = 3,
                 Range = 1200,
+                Delay = 0.25,
+                Speed = huge,
+                Radius = 50,
+                Collision = true,
+                From = myHero,
                 Type = "Skillshot"
         })
 end
@@ -112,6 +123,16 @@ function Lucian:Menu()
         Menu.E:MenuElement({name = " ", drop = {"Customization"}})
         Menu.E:MenuElement({name = "E Cast Mode", id = "Mode", value = 1, drop = {"To Side", "To Mouse", "To Target"}})
 
+        -- R SETTINGS
+        Menu.R:MenuElement({name = " ", drop = {"Modes"}})
+        Menu.R:MenuElement({id = "Combo", name = "Combo", value = true})
+        Menu.R:MenuElement({name = " ", drop = {"Mana Manager"}})
+        Menu.R:MenuElement({id = "ComboMana", name = "Combo - Min. Mana(%)", value = 0, min = 0, max = 100})
+        Menu.R:MenuElement({name = " ", drop = {"Customization"}})
+        Menu.R:MenuElement({id = "Magnet",name = "Target Magnet", value = true})
+        Menu.R:MenuElement({type = MENU, name = "Combo White List", id = "ComboWhiteList"})
+        Menu.R.ComboWhiteList:MenuElement({id = "info", name = "Detecting Heroes, Please Wait...", drop = {" "}})
+
         -- OTHER
         Menu:MenuElement({name = " ", drop = {"Extra Settings"}})
         Menu:MenuElement({name = "Combo Rotation Priority",  id = "ComboRotation", value = 3, drop = {"Q", "W", "E"}})
@@ -142,6 +163,8 @@ function Lucian:MenuLoad()
 
                                 Menu.W.HarassWhiteList:MenuElement({name = unit.charName, id = unit.charName, value = true, leftIcon = icon})
                                 Menu.W.KSWhiteList:MenuElement({name = unit.charName, id = unit.charName, value = true, leftIcon = icon})
+
+                                Menu.R.ComboWhiteList:MenuElement({name = unit.charName, id = unit.charName, value = true, leftIcon = icon})
                         end
                 end
 
@@ -153,6 +176,8 @@ function Lucian:MenuLoad()
 
                 Menu.W.HarassWhiteList.info:Hide(true)
                 Menu.W.KSWhiteList.info:Hide(true)
+
+                Menu.R.ComboWhiteList.info:Hide(true)
 
                 self.menuLoadRequired = nil
         else
@@ -190,12 +215,13 @@ function Lucian:CastQExtended(target)
                 if castPosition and hitChance >= 1 then
                         local targetPos = myHero.pos:Extended(castPosition, self.Q2.Range)
 
-                        for i, minion in pairs(self.minions) do
+                        for i=1, #self.minions do
+                                local minion = self.minions[i]
                                 if minion and self.Q:CanCast(minion) then
                                         local minionPos = myHero.pos:Extended(minion.pos, self.Q2.Range)
 
-                                        if GetDistance(targetPos, minionPos) <= self.Q2.Radius then 
-                                                Control.CastSpell(HK_Q, minion)
+                                        if GetDistance(targetPos, minionPos) <= self.Q2.Radius + target.boundingRadius then 
+                                                self.Q:Cast(minion)
                                         end
                                 end
                         end
@@ -236,11 +262,22 @@ function Lucian:CastE(target, castMode, castRange)
                 
                 self.E:Cast(castPos)
         end
+        ResetAutoAttack()
 end
 
-function Lucian:Combo()
+function Lucian:Combo()        
         local target = self.target
-        if not target then return end
+        if not target or not (self.Q:IsReady() or self.W:IsReady() or self.E:IsReady()) then
+            if self.R:IsReady() then
+                local useR = Menu.R.Combo:Value()
+                local mana = Menu.R.ComboMana:Value()
+                local rTarg = GetTarget(self.R.Range, 0)
+                if useR and self:EnoughMana(mana) and rTarg and self:WhiteListValue(Menu.R.ComboWhiteList, rTarg) then
+                    self.R:CastToPred(rTarg, 2)
+                end
+            end
+            return 
+        end
 
         local useQ2 = Menu.Q2.Combo:Value()
         local mana = Menu.Q2.ComboMana:Value()
@@ -252,11 +289,11 @@ end
 function Lucian:Harass()
         local target = self.target
         if not target then return end
-
+        
         local useQ1 = Menu.Q.Harass:Value()
         local manaQ1 = Menu.Q.HarassMana:Value()
         if useQ1 and self.Q:IsReady() and self.Q:CanCast(target) and self:EnoughMana(manaQ1) and self:WhiteListValue(Menu.Q.HarassWhiteList, target) then
-                Control.CastSpell(HK_Q, target)
+                self.Q:Cast(target)
         end
 
         local useQ2 = Menu.Q2.Harass:Value()
@@ -269,7 +306,7 @@ function Lucian:Harass()
         local manaW = Menu.W.HarassMana:Value()
         if useW and self:EnoughMana(manaW) and self:WhiteListValue(Menu.W.HarassWhiteList, target) then
                 self:CastW(target, false, false)
-        end
+        end        
 end
 
 function Lucian:AutoHarass()
@@ -294,7 +331,7 @@ function Lucian:KillSteal()
                         local damage = self.Q:GetDamage(unit)
 
                         if health + shield < damage then
-                                Control.CastSpell(HK_Q, unit)
+                                self.Q:Cast(unit)
                         end
                 end
 
@@ -313,7 +350,7 @@ function Lucian:OnTick()
         if ShouldWait() then return end
 
         self.mode = GetMode()
-        self.target = GetTarget(GetTrueAttackRange(myHero), 0)
+        self.target = GetTarget(self.Q2.Range, 0)
         self.enemies = GetEnemyHeroes(self.W.Range)
         self.minions = GetEnemyMinions(self.Q2.Range)
 
@@ -329,10 +366,18 @@ function Lucian:OnTick()
             self.mode == 2 and self:Harass()
 end
 
-function Lucian:OnDraw()
+function Lucian:OnDraw()  
+        local rTarg = self.target or GetTarget(self.R.Range, 0)        
+        if Menu.R.Magnet:Value() and HasBuff(myHero, "LucianR") and rTarg then            
+            local moveVector = rTarg:GetPrediction(huge, 0.3) - rTarg.pos
+            --
+            self.moveTo = myHero.pos+moveVector    
+        else
+            self.moveTo = nil 
+        end 
         local drawSettings = Menu.Draw
         if drawSettings.ON:Value() then            
-                local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113)
+                local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113) and self.Q2:Draw(66, 244, 113)
                 local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
                 local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
                 local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)            
@@ -345,6 +390,21 @@ function Lucian:OnPreMovement(args)
                 args.Process = false
                 return 
         end 
+        --R Magnet logic        
+        if self.moveTo then
+            if GetDistance(self.moveTo) < 20 then                  
+                if myHero.pathing.hasMovePath then
+                    args.Target = myHero.pos
+                else
+                    args.Process = false
+                end
+            elseif not MapPosition:inWall(self.moveTo) then 
+                if GetDistance(self.moveTo) >= self.E.Range and self.E:IsReady() then
+                    self.E:Cast(self.moveTo)
+                end
+                args.Target = self.moveTo 
+            end 
+        end 
 end
 
 function Lucian:OnPreAttack(args) 
@@ -355,22 +415,21 @@ function Lucian:OnPreAttack(args)
 end
 
 function Lucian:OnPostAttack()
-        local target = self.target
-        if not target or not IsValidTarget(target) then return end
+        local target = GetTarget(GetTrueAttackRange(myHero), 0)
+        if not IsValidTarget(target) then return end
         local target_type = target.type
 
         if target_type == Obj_AI_Hero then
                 if self.mode == 1 then
-                        local comboRotation = Menu.ComboRotation:Value() - 1
-
-                        if Menu.Q.Combo:Value() and (comboRotation == _Q or GameCanUseSpell(comboRotation) ~= READY) and Ready(_Q) and GetDistance(target) <= self.Q.Range then
-                                Control.CastSpell(HK_Q, target)
-                        elseif Menu.E.Combo:Value() and (comboRotation == _E or GameCanUseSpell(comboRotation) ~= READY) and Ready(_E) and GetDistance(target) <= (self.E.Range + myHero.range) then
+                        local comboRotation = Menu.ComboRotation:Value() - 1                        
+                        if Menu.Q.Combo:Value() and (comboRotation == _Q or GameCanUseSpell(comboRotation) ~= READY) and self.Q:IsReady() and GetDistance(target) <= self.Q.Range then                                
+                                self.Q:Cast(target)
+                        elseif Menu.E.Combo:Value() and (comboRotation == _E or GameCanUseSpell(comboRotation) ~= READY) and self.E:IsReady() and GetDistance(target) <= (self.E.Range + myHero.range) then
                                 local castMode = Menu.E.Mode:Value()
                                 local castRange = self:DashRange(target)
 
                                 self:CastE(target, castMode, castRange)
-                        elseif Menu.W.Combo:Value() and (comboRotation == _W or GameCanUseSpell(comboRotation) ~= READY) and Ready(_W) and GetDistance(target) <= self.W.Range then
+                        elseif Menu.W.Combo:Value() and (comboRotation == _W or GameCanUseSpell(comboRotation) ~= READY) and self.W:IsReady() and GetDistance(target) <= self.W.Range then
                                 local checkPrediction = Menu.W.IgnorePred:Value()
                                 local checkCollision = Menu.W.IgnoreColl:Value()
 
