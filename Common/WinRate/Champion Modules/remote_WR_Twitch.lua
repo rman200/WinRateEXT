@@ -195,7 +195,7 @@
             end
         end
         --
-        if self.E:IsReady() and ManaPercent(myHero) >= Menu.E.Mana:Value() then
+        if self.E:IsReady() and Menu.E.Combo:Value() and ManaPercent(myHero) >= Menu.E.Mana:Value() then
             local stacks = 0
             for i=1, #self.enemies do                
                 stacks = stacks + self.poisonTable[self.enemies[i].networkID].stacks
@@ -216,7 +216,7 @@
     end
 
     function Twitch:Harass() 
-        if self.E:IsReady() and ManaPercent(myHero) >= Menu.E.ManaHarass:Value() then
+        if self.E:IsReady() and Menu.E.Harass:Value() and ManaPercent(myHero) >= Menu.E.ManaHarass:Value() then
             local stacks = 0
             for i=1, #self.enemies do                
                 stacks = stacks + self.poisonTable[self.enemies[i].networkID].stacks

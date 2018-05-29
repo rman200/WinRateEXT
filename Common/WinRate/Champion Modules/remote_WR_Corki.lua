@@ -281,8 +281,8 @@
 
     function Corki:IsDangerousPosition(pos)
         if IsUnderTurret(pos, TEAM_ENEMY) then return true end
-        for i=1, GameHeroCount() do
-            local hero = GameHero(i)      
+        for i=1, HeroCount() do
+            local hero = Hero(i)      
             if IsValidTarget(hero) and GetTrueAttackRange(unit) < 400 and hero.pos:DistanceTo(pos) < 350 then 
                 return true 
             end      

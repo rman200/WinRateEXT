@@ -5,8 +5,8 @@ Data = {
             Changelog = "Ashe Initial Release",
         },
         Corki = {
-            Version = 1.03,
-            Changelog = "Corki Initial Release",
+            Version = 1.04,
+            Changelog = "OnDash Typo Fix",
         },
         Darius = {
             Version = 1.02,
@@ -37,8 +37,8 @@ Data = {
             Changelog = "Sion Initial Release",
         },
         Twitch = {
-            Version = 1.00,
-            Changelog = "Twitch Initial Release",
+            Version = 1.01,
+            Changelog = "Combo/Harass E Fixed",
         },
         Vayne = {
             Version = 1.00,
