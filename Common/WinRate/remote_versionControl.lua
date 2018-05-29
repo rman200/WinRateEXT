@@ -37,8 +37,8 @@ Data = {
             Changelog = "Sion Initial Release",
         },
         Twitch = {
-            Version = 1.01,
-            Changelog = "Combo/Harass E Fixed",
+            Version = 1.02,
+            Changelog = "Combo/Harass E Fixed \n Ult Can Now Be Disabled",
         },
         Vayne = {
             Version = 1.00,

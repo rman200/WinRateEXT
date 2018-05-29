@@ -97,7 +97,7 @@
         Menu.E:MenuElement({id = "Dying", name = "Use If Dying", value = true}) 
         --R--
         Menu.R:MenuElement({name = " ", drop = {"Combo Settings"}})
-        Menu.R:MenuElement({id = "Count", name = "Use When X Enemies", value = 2, min = 1, max = 5, step = 1})
+        Menu.R:MenuElement({id = "Count", name = "Use When X Enemies", value = 2, min = 0, max = 5, step = 1})
         Menu.R:MenuElement({id = "Duel", name = "Use on Duel", value = true})         
         Menu.R:MenuElement({id = "Heroes", name = "Duel Targets", type = MENU})
             Menu.R.Heroes:MenuElement({id = "Loading", name = "Loading Champions...", type = SPACE})
@@ -187,7 +187,7 @@
     end 
 
     function Twitch:Combo()        
-        if self.R:IsReady() and ManaPercent(myHero) >= Menu.R.Mana:Value() then
+        if self.R:IsReady() and ManaPercent(myHero) >= Menu.R.Mana:Value() and Menu.R.Count:Value() ~= 0 then
             local rTarget = GetTarget(self.R.Range)
             if (#GetEnemyHeroes(self.R.Range) >= Menu.R.Count:Value()) or (Menu.R.Duel:Value() and IsValidTarget(rTarget) and Menu.R.Heroes[rTarget.charName]:Value()) then                       
                 self.R:Cast() 
