@@ -32,9 +32,17 @@ Data = {
             Version = 1.01,
             Changelog = "Jhin Initial Release",
         },
+        Riven = {
+            Version = 1.00,
+            Changelog = "Riven Initial Release",
+        },
         Sion = {
             Version = 1.02,
             Changelog = "Sion Initial Release",
+        },
+        Syndra = {
+            Version = 1.00,
+            Changelog = "Syndra Initial Release",
         },
         Twitch = {
             Version = 1.02,
