@@ -241,7 +241,7 @@
     end
 
     function Ezreal:LastHit()        
-        if Menu.Q.KS:Value() and self.Q:IsReady() then 
+        if Menu.Q.LastHit:Value() and self.Q:IsReady() then 
             local busy = myHero.attackData.state == STATE_WINDDOWN 
             local minions = GetEnemyMinions(self.Q.Range)          
             for i=1, #minions do

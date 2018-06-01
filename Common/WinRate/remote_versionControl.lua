@@ -17,8 +17,8 @@ Data = {
             Changelog = "Draven Initial Release",
         },
         Ezreal = {
-            Version = 1.01,
-            Changelog = "Ezreal Initial Release",
+            Version = 1.02,
+            Changelog = "Ezreal LastHit Fix",
         },
         Jax = {
             Version = 1.00,
@@ -41,7 +41,7 @@ Data = {
             Changelog = "Sion Initial Release",
         },
         Syndra = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Syndra Initial Release",
         },
         Twitch = {
