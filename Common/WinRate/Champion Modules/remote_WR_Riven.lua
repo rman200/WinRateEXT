@@ -758,7 +758,7 @@
         --        
         local rBuff = GetBuffByName(myHero, "rivenwindslashready") 
         local time = Timer()      
-        if rBuff and qBuff.expireTime >= time and rBuff.expireTime - time <= 1 or HealthPercent(myHero) <= 20 or (target.health > rDmg + aaDmg * 2 and HealthPercent(target) < 40) or target.health <= rDmg then
+        if rBuff and rBuff.expireTime >= time and rBuff.expireTime - time <= 1 or HealthPercent(myHero) <= 20 or (target.health > rDmg + aaDmg * 2 and HealthPercent(target) < 40) or target.health <= rDmg then
             self:CastR2(target, 2)
         end        
     end
