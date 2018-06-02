@@ -44,6 +44,10 @@ Data = {
             Version = 1.01,
             Changelog = "Syndra Initial Release",
         },
+        TwistedFate = {
+            Version = 1.00,
+            Changelog = "TF Initial Release",
+        },
         Twitch = {
             Version = 1.02,
             Changelog = "Combo/Harass E Fixed \n Ult Can Now Be Disabled",
