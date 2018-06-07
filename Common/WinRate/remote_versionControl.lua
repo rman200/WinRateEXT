@@ -49,7 +49,7 @@ Data = {
             Changelog = "TF Initial Release",
         },
         Twitch = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Combo/Harass E Fixed \n Ult Can Now Be Disabled",
         },
         Vayne = {

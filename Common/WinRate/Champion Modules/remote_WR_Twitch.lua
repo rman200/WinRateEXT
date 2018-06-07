@@ -181,7 +181,7 @@
 
     function Twitch:OnDash(unit, unitPos, unitPosTo, dashSpeed, dashGravity, dashDistance)  
         if ShouldWait() or not (Menu.W.Gapcloser:Value() and self.W:IsReady()) then return end   
-        if IsValidTarget(unit) and GetDistance(unitPosTo) < self.W.Range and unit.team == TEAM_ENEMY and IsFacing(unit, myHero) then --Gapcloser 
+        if not self:IsInvisible() and IsValidTarget(unit) and GetDistance(unitPosTo) < self.W.Range and unit.team == TEAM_ENEMY and IsFacing(unit, myHero) then --Gapcloser 
             self.W:CastToPred(unit, 2)
         end
     end 
@@ -239,7 +239,7 @@
     function Twitch:Flee() 
         if #GetEnemyHeroes(1000) == 0 then return end
         local wTarget = GetTarget(600, 0)
-        if self.W:IsReady() and Menu.W.Flee:Value() and wTarget then
+        if not self:IsInvisible() and self.W:IsReady() and Menu.W.Flee:Value() and wTarget then
             self.W:CastToPred(wTarget, 2)
         elseif self.Q:IsReady() and Menu.Q.Flee:Value() then
             self.Q:Cast()
