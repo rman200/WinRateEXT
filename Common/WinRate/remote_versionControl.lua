@@ -53,7 +53,7 @@ Data = {
             Changelog = "Combo/Harass E Fixed \n Ult Can Now Be Disabled",
         },
         Vayne = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Vayne Initial Release",
         },
         Vladimir = {

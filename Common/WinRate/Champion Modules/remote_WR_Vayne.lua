@@ -5,7 +5,7 @@
 
     function Vayne:__init()
         --[[Data Initialization]]        
-        self.scriptVersion = "1.0"
+        self.scriptVersion = "1.1"
         self:Spells()
         self:Menu() 
         --[[Default Callbacks]]
@@ -190,7 +190,7 @@
         end
     end
 
-    function Vayne:OnPostAttack()        
+    function Vayne:OnPostAttack()
         local target = GetTargetByHandle(myHero.attackData.target)
         if ShouldWait() or not IsValidTarget(target) then return end
         --
@@ -205,13 +205,15 @@
                 local modeCheck = (self.mode == 1 and Menu.Q.Combo:Value()  and ManaPercent(myHero) >= Menu.Q.Mana:Value()) or (self.mode == 2 and Menu.Q.Harass:Value() and ManaPercent(myHero) >= Menu.Q.ManaHarass:Value()) 
                 local tPos = self:GetBestTumblePos()                                          
                 if modeCheck and tPos then 
-                    self.Q:Cast(tPos) 
+                    self.Q:Cast(tPos)
+                    ResetAutoAttack() 
                 end               
             end            
         elseif self.Q:IsReady() and self.mode and self.mode >= 3 and Menu.Q.Jungle:Value() and ManaPercent(myHero) >= Menu.Q.ManaClear:Value() and tTeam == 300 then
             local tPos = self:GetKitingTumblePos(target)
             if tPos then 
-                self.Q:Cast(tPos) 
+                self.Q:Cast(tPos)
+                ResetAutoAttack() 
             end
         --elseif self.Q:IsReady() and tType == Obj_AI_Turret then
             --tumble to closest wall
@@ -307,7 +309,7 @@
         local root1, root2 = CircleCircleIntersection(myHero.pos, target.pos, GetTrueAttackRange(myHero), 500)
         if root1 and root2 then
             local closest = GetDistance(root1, mousePos) < GetDistance(root2, mousePos) and root1 or root2            
-            self.Q:Cast(myHero.pos:Extended(closest, 300))
+            return myHero.pos:Extended(closest, 300)
         end     
     end
     
