@@ -277,7 +277,7 @@
             end
             --
             local rBuff = GetBuffByName(myHero, "rivenwindslashready") 
-            if rBuff and time - rBuff.expireTime <= 1 or HealthPercent(myHero) <= 20 then
+            if rBuff and rBuff.expireTime >= time and time - rBuff.expireTime <= 1 or HealthPercent(myHero) <= 20 then
                 local targ = GetTarget(self.R2.Range, 0)
                 self:CastR2(targ, 1)
             end
