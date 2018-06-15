@@ -1,13 +1,13 @@
 
     if _G.WR_COMMON_LOADED then
-	    return 
-	end
-	--
-	_G.WR_COMMON_LOADED = true 
+        return 
+    end
+    --
+    _G.WR_COMMON_LOADED = true 
 
-  	require "MapPositionGOS"
-  	require "DamageLib"    
-  	require "2DGeometry"    
+    require "MapPositionGOS"
+    require "DamageLib"    
+    require "2DGeometry"    
 
 --
     local huge = math.huge
@@ -213,6 +213,10 @@
 
     local function GetHealthPrediction(unit, delay)
         return HealthPrediction:GetPrediction(unit, delay)
+    end
+
+    local function GetPriority(unit)
+        return TargetSelector:GetPriority(unit)
     end    
     
     --</IOrbwalker>
@@ -225,7 +229,7 @@
     end
  
 
-	local function Ready(spell)
+    local function Ready(spell)
         return GameCanUseSpell(spell) == 0
     end
 
@@ -772,7 +776,7 @@
             KeyDown(slot)
             return KeyUp(slot)
         end
-        -- 
+        --         
         local pos  = castOn.x and castOn
         local targ = castOn.health and castOn 
         --           

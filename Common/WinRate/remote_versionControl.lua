@@ -4,6 +4,10 @@ Data = {
             Version = 1.02,
             Changelog = "Ashe Initial Release",
         },
+        Blitzcrank = {
+            Version = 1.00,
+            Changelog = "Blitz Initial Release",
+        },
         Corki = {
             Version = 1.04,
             Changelog = "OnDash Typo Fix",
@@ -52,10 +56,14 @@ Data = {
             Version = 1.03,
             Changelog = "Combo/Harass E Fixed \n Ult Can Now Be Disabled",
         },
+        Varus = {
+            Version = 1.00,
+            Changelog = "Varus Initial Release",
+        },
         Vayne = {
             Version = 1.01,
             Changelog = "Vayne Initial Release",
-        },
+        },        
         Vladimir = {
             Version = 1.05,
             Changelog = "Vladimir Initial Release",
@@ -70,7 +78,7 @@ Data = {
     },
     Dependencies = {
         commonLib = {
-            Version = 1.09,
+            Version = 1.10,
         },
         prediction = {
             Version = 1,
