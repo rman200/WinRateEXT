@@ -33,7 +33,7 @@ Data = {
             Changelog = "Jhin Initial Release",
         },
         Riven = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Riven R2 Fix",
         },
         Sion = {

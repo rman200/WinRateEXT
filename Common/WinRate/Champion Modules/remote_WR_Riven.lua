@@ -270,16 +270,16 @@
                 local target = self.enemies[i]
                 if IsValidTarget(target) then --checks for immortal and etc                        
                     local dmg = getdmg("R", target)                 
-                    if dmg > target.health + target.shieldAD then
+                    if dmg > target.health + target.shieldAD then                        
                         self:CastR2(target, 2)
                     end
                 end
             end
             --
             local rBuff = GetBuffByName(myHero, "rivenwindslashready") 
-            if rBuff and rBuff.expireTime >= time and time - rBuff.expireTime <= 1 or HealthPercent(myHero) <= 20 then
+            if rBuff and rBuff.expireTime >= time and rBuff.expireTime - time <= 1 or HealthPercent(myHero) <= 20 then
                 local targ = GetTarget(self.R2.Range, 0)
-                self:CastR2(targ, 1)
+                self:CastR2(targ, 1)                
             end
         end                              
     end
@@ -712,7 +712,7 @@
         DelayAction(function()
             ResetAutoAttack()
             Control.Move(myHero.posTo)            
-        end, 0.2 + extraDelay/1000)
+        end,extraDelay/1000) 
     end
 
     function Riven:CastQ(targ) 
