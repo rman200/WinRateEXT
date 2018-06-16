@@ -116,6 +116,7 @@
                     Menu.Q.GapList:MenuElement({        id = charName, name = charName, value = false        , leftIcon = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/champions/"..charName..".png"})
                     Menu.Q.Blacklist:MenuElement({      id = charName, name = charName, value = priority <= 2, leftIcon = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/champions/"..charName..".png"})
                     Menu.Q.BlacklistHarass:MenuElement({id = charName, name = charName, value = priority <= 3, leftIcon = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/champions/"..charName..".png"})
+                    Menu.R.Heroes:MenuElement({         id = charName, name = charName, value = priority >= 3, leftIcon = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/champions/"..charName..".png"})
                 end
             end
             local count = -13
@@ -133,6 +134,7 @@
             Menu.Q.GapList.Loading:Hide(true)
             Menu.Q.InterruptList.Loading:Hide(true)
             Menu.R.InterruptList.Loading:Hide(true)
+            Menu.R.Heroes.Loading:Hide(true)
             self.menuLoadRequired = nil         
         else
             Callback.Del("Tick", function() self:MenuLoad() end)
@@ -199,7 +201,7 @@
                 local enemy = self.enemies[i]                
                 if qCheck and IsImmobile(enemy, 0.5) then                             
                     self.Q:Cast(enemy)                   
-                elseif self.mode == 1 and rCheck and GetDistance(enemy) <= 500 and myHero:GetSpellData(_E).currentCd > 0 then                             
+                elseif self.mode == 1 and rCheck and GetDistance(enemy) <= 500 and myHero:GetSpellData(_E).currentCd > 0 and Menu.R.Heroes[enemy.charName]:Value() then                             
                     self.R:Cast()                   
                 end                
             end 

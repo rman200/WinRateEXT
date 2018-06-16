@@ -5,7 +5,7 @@ Data = {
             Changelog = "Ashe Initial Release",
         },
         Blitzcrank = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Blitz Initial Release",
         },
         Corki = {
