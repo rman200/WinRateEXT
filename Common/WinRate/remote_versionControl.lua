@@ -49,7 +49,7 @@ Data = {
             Changelog = "Syndra Initial Release",
         },
         TwistedFate = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "TF Initial Release",
         },
         Twitch = {

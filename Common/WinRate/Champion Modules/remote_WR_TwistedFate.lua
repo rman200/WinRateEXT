@@ -13,10 +13,7 @@
         --[[Orb Callbacks]]
         OnAttack(function(...) self:OnAttack(...) end)
         OnPreAttack(function(...) self:OnPreAttack(...) end)
-        OnPreMovement(function(...) self:OnPreMovement(...) end)
-        --[[Custom Callbacks]]
-        OnDash(function(unit, unitPos, unitPosTo, dashSpeed, dashGravity, dashDistance) self:OnDash(unit, unitPos, unitPosTo, dashSpeed, dashGravity, dashDistance) end) 
-                   
+        OnPreMovement(function(...) self:OnPreMovement(...) end)                   
     end
 
     function TwistedFate:Spells()
