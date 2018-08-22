@@ -36,7 +36,7 @@
         if not Menu then
             self:FirstInstance()  
         end
-        Menu:MenuElement({id = str, name = "Error:", value = 1,drop = {str}})                            
+        Menu:MenuElement({id = str, name = "Error:  "..str, value = 1,drop = {""}})                            
     end
 
     function Warn:FirstInstance()
@@ -47,12 +47,18 @@
         Menu:MenuElement({id = "space"       , name = "", type = SPACE})
 
         local res = Game.Resolution()
-        Callback.Add("Draw", function()                       
-            Draw.Text("Something Went Wrong!\n Check Shift Menu.", 64, res.x/2-(#str * 10), res.y/2, Draw.Color(255,255,0,0))
+        Callback.Add("Draw", function() 
+            local str = "Something Went Wrong!\n Check Shift Menu."                       
+            Draw.Text(str, 64, res.x/2-(#str * 7), res.y/5, Draw.Color(255,255,0,0))
         end)
     end
 
     class 'Utils' 
+
+    function Utils:Sleep(s)
+        local wait = os.clock()
+        repeat until os.clock() - wait >= s
+    end 
 
     function Utils:ReadAll(file)
         local f = assert(open(file, "r"))
@@ -87,23 +93,24 @@
         --[[Checks Write Permission]]
         local  WRITE_PERMISSION_TEST = assert(open(COMMON_PATH.."WR_CHECK_RIGHTS", "w"))
         if not WRITE_PERMISSION_TEST then
-            Warn("GOS EXT DOESNT HAVE WRITE RIGHTS! LAUNCH AS ADMIN!")
+            Warn("EXT MISSING WRITE RIGHTS! LAUNCH AS ADMIN!")
             return false 
         end
         WRITE_PERMISSION_TEST:close()
         --
         --[[Checks Read Permission]]
-        local  READ_PERMISSION_TEST = assert(FileExist(COMMON_PATH.."WR_CHECK_RIGHTS"))
+        local  READ_PERMISSION_TEST = FileExist(COMMON_PATH.."WR_CHECK_RIGHTS")
         if not READ_PERMISSION_TEST then
-            Warn("GOS EXT DOESNT HAVE READ RIGHTS! LAUNCH AS ADMIN!")
+            Warn("EXT MISSING READ RIGHTS! LAUNCH AS ADMIN!")
             return false 
         end
         --
         --[[Checks Download Permission]]
-        DownloadFileAsync("https://raw.githubusercontent.com/rman200/WinRateEXT/master/Common/WinRate/DL_PERMISSION_TEST.lua", COMMON_PATH.."WR_CHECK_DL", function() end)
-        local  DL_PERMISSION_TEST = assert(FileExist(COMMON_PATH.."WR_CHECK_DL"))
+        DownloadFileAsync("https://raw.githubusercontent.com/rman200/WinRateEXT/master/Common/WinRate/DL_PERMISSION_TEST.lua", COMMON_PATH.."WR_CHECK_DL.lua", function() end)
+        Utils:Sleep(1)
+        local  DL_PERMISSION_TEST = FileExist(COMMON_PATH.."WR_CHECK_DL.lua")
         if not DL_PERMISSION_TEST then
-            Warn("GOS EXT DOESNT HAVE DOWNLOAD RIGHTS! CHECK FIREWALL!")
+            Warn("EXT MISSING DOWNLOAD RIGHTS! CHECK FIREWALL!")
             return false 
         end
         --
@@ -234,7 +241,7 @@
         self:WriteModule()
         for i=1, #ShouldLoad do
             local dependency = Utils:ReadAll(concat({WR_PATH, ShouldLoad[i], ".lua"}))
-            writeModule(dependency)    
+            self:WriteModule(dependency)    
         end
 
         dofile(WR_PATH.."changelog"..".lua")                          
