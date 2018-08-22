@@ -106,9 +106,9 @@
         end
         --
         --[[Checks Download Permission]]
-        DownloadFileAsync("https://raw.githubusercontent.com/rman200/WinRateEXT/master/Common/WinRate/DL_PERMISSION_TEST.lua", COMMON_PATH.."WR_CHECK_DL.lua", function() end)
+        DownloadFileAsync("https://raw.githubusercontent.com/rman200/WinRateEXT/master/Common/WinRate/DL_PERMISSION_TEST.lua", COMMON_PATH.."WR_CHECK_DL", function() end)
         Utils:Sleep(1)
-        local  DL_PERMISSION_TEST = FileExist(COMMON_PATH.."WR_CHECK_DL.lua")
+        local  DL_PERMISSION_TEST = FileExist(COMMON_PATH.."WR_CHECK_DL")
         if not DL_PERMISSION_TEST then
             Warn("EXT MISSING DOWNLOAD RIGHTS! CHECK FIREWALL!")
             return false 
@@ -164,8 +164,8 @@
         f:close()
     end
     --
-    function Updater:CheckUpdate()
-        DelayAction(function() self.Stage = 2 end, 0.2)
+    function Updater:CheckUpdate()        
+        self.Stage = 2
         local currentData, latestData = dofile(versionControl), dofile(versionControl2)
         --[[Loader Version Check]]
         if currentData.Loader.Version < latestData.Loader.Version then
@@ -229,21 +229,22 @@
                 end
             end
             if DownloadsLeft == 0 then
-                _G.WR_Loaded = true             
-                Loader()
+                _G.WR_Loaded = true                             
+                Loader()                
             end
         end
     end
 
     class 'Loader'  
 
-    function Loader:__init()               
+    function Loader:__init()        
         self:WriteModule()
+        --
         for i=1, #ShouldLoad do
             local dependency = Utils:ReadAll(concat({WR_PATH, ShouldLoad[i], ".lua"}))
             self:WriteModule(dependency)    
         end
-
+        --
         dofile(WR_PATH.."changelog"..".lua")                          
         dofile(WR_PATH.."activeModule"..".lua") 
     end
