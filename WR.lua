@@ -193,6 +193,11 @@
             currentData.Loader.Version = latestData.Loader.Version
             Warn("Please Reload The Script! [F6]x2")                
         end
+        --[[Core Check]]
+        if currentData.Core.Version < latestData.Core.Version then            
+            currentData.Core.Version = latestData.Core.Version
+            currentData.Core.Changelog = latestData.Core.Changelog
+        end
         --[[Active Champ Module Check]]            
         if not currentData.Champions[charName] or currentData.Champions[charName].Version < latestData.Champions[charName].Version then
             Utils:DownloadFile(CHAMP_URL, CHAMP_PATH, "WR_"..charName..".lua")

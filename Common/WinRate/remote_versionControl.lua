@@ -74,7 +74,7 @@ Data = {
         },
     },
     Loader = {
-        Version = 1.03,
+        Version = 1.04,
     },
     Dependencies = {
         commonLib = {
@@ -84,7 +84,7 @@ Data = {
             Version = 1,
         },
         changelog = {
-            Version = 1.00,
+            Version = 1.01,
         },
         callbacks = {
             Version = 1.01,
@@ -108,7 +108,7 @@ Data = {
         },
     },
     Core = {
-        Version = 1.00,
+        Version = 1.01,
         Changelog = 
             "Welcome to Project WinRate - The Most Advanced Script Ever on EXT!\n\n"..
             "We work to deliver the best scripting experience possible through our\n"..
