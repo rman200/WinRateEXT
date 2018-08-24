@@ -28,6 +28,7 @@
     local versionControl     = WR_PATH .. "versionControl.lua"
     local versionControl2    = WR_PATH .. "versionControl2.lua"
  
+    local relativePath       = "/Champion Modules/WR_"
     --WR--
 
     class 'Warn'  
@@ -118,12 +119,21 @@
     end
 
     function Utils:CheckFolders()
+        --Custom Folder Structure, helps keep things organized
         local f = open(CHAMP_PATH.."folderTest", "w")
         if f then
             f:close()
             return true 
         end
-        Warn("Couldnt Find Installation Folders!")
+
+        --Absolutely Barbaric
+        --Warn("Couldnt Find Custom Folders!")
+        WR_PATH            = COMMON_PATH
+        CHAMP_PATH         = COMMON_PATH       
+        versionControl     = COMMON_PATH .. "versionControl.lua"
+        versionControl2    = COMMON_PATH .. "versionControl2.lua"
+        relativePath       = "WR_"
+        return true
     end
 
     function Utils:DownloadFile(from, to, filename)
@@ -136,15 +146,25 @@
         return Data.Champions[charName]
     end
 
+    function Utils:CheckDependencies()
+        --[[ICs Orbwalker]]
+        if not (_G.SDK and _G.SDK.Orbwalker) then
+            Warn("ICs Orbwalker Is Required!")
+            return
+        end
+
+        return true
+    end
+
     class 'Updater'  
 
     function Updater:__init()
         self.Stage = 0;
         Callback.Add("Tick", function() self:OnTick() end)
-        --
-        if Utils:CheckRights() and Utils:CheckFolders() then
+        --        
+        if Utils:CheckRights() and Utils:CheckFolders() and Utils:CheckDependencies() then           
             self:GetVersionControl()
-            DelayAction(function() self.Stage = 1 end, 0.2)
+            DelayAction(function() self.Stage = 1 end, 0.5)
         end
     end
 
@@ -206,14 +226,14 @@
         table.sort(ShouldLoad)
         insert(ShouldLoad, 1, "commonLib")
         insert(ShouldLoad, 2, "menuLoad")
-        insert(ShouldLoad, "/Champion Modules/WR_"..charName)
+        insert(ShouldLoad, relativePath..charName)
         self:UpdateVersionControl(currentData)
     end
 
     function Updater:OnTick()
         if _G.WR_Loaded then return end
-        --
-        if self.Stage == 1 and FileExist(versionControl) and FileExist(versionControl2) then
+        --        
+        if self.Stage == 1 and FileExist(versionControl) and FileExist(versionControl2) then           
             if Utils:CheckSupported() then  
                 self:CheckUpdate()                
             else
@@ -240,7 +260,7 @@
     function Loader:__init()        
         self:WriteModule()
         --
-        for i=1, #ShouldLoad do
+        for i=1, #ShouldLoad do            
             local dependency = Utils:ReadAll(concat({WR_PATH, ShouldLoad[i], ".lua"}))
             self:WriteModule(dependency)    
         end
@@ -262,5 +282,3 @@
     function OnLoad()
         Updater()
     end    
-
-

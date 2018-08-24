@@ -9,7 +9,7 @@
     local wrLogo       = "MenuElement\\WinRateLogo.png"
     local starLogo     = "MenuElement\\5stars.png"
     --
-    local currentData = dofile(COMMON_PATH.."WinRate/versionControl.lua")
+    local currentData = io.open(COMMON_PATH.."WinRate/Champion Modules/".."folderTest", "w") and dofile(COMMON_PATH.."WinRate/versionControl.lua") or dofile(COMMON_PATH.."versionControl.lua")
     local mainText    = currentData.Core.Changelog
     local champText   = currentData.Champions[charName].Changelog
     --
