@@ -48,6 +48,10 @@ Data = {
             Version = 1.01,
             Changelog = "Syndra Initial Release",
         },
+        Teemo = {
+            Version = 1.00,
+            Changelog = "Teemo Initial Release",
+        },
         TwistedFate = {
             Version = 1.01,
             Changelog = "TF Initial Release",
