@@ -48,6 +48,10 @@ Data = {
             Version = 1.01,
             Changelog = "Syndra Initial Release",
         },
+        Talon = {
+            Version = 1.00,
+            Changelog = "Talon Initial Release",
+        },
         Teemo = {
             Version = 1.00,
             Changelog = "Teemo Initial Release",
