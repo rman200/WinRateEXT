@@ -5,8 +5,8 @@ Data = {
             Changelog = "Ashe Initial Release",
         },
         Blitzcrank = {
-            Version = 1.01,
-            Changelog = "Blitz Initial Release",
+            Version = 1.02,
+            Changelog = "Fixed bug on R KS",
         },
         Corki = {
             Version = 1.04,

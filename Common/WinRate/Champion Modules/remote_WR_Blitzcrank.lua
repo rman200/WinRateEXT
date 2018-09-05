@@ -251,7 +251,7 @@
         if Menu.R.KS:Value() and self.R:IsReady() then            
             for i=1, #self.enemies do
                 local targ = self.enemies[i]                
-                if self.R:GetDamage(targ) >= targ.health + targ.shieldAP then
+                if GetDistance(targ) <= self.R.Range and self.R:GetDamage(targ) >= targ.health + targ.shieldAP then
                     self.R:Cast()
                 end
             end
