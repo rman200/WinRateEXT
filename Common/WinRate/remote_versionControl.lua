@@ -13,8 +13,8 @@ Data = {
             Changelog = "OnDash Typo Fix",
         },
         Darius = {
-            Version = 1.02,
-            Changelog = "Darius Initial Release",
+            Version = 1.03,
+            Changelog = "Improved Darius AA Reset",
         },
         Draven = {
             Version = 1.02,
@@ -25,8 +25,8 @@ Data = {
             Changelog = "Ezreal LastHit Fix",
         },
         Jax = {
-            Version = 1.00,
-            Changelog = "Jax Initial Release",
+            Version = 1.01,
+            Changelog = "Improved Jax AA Reset",
         },
         Lucian = {
             Version = 1.03,
@@ -69,8 +69,8 @@ Data = {
             Changelog = "Varus Initial Release",
         },
         Vayne = {
-            Version = 1.01,
-            Changelog = "Vayne Initial Release",
+            Version = 1.02,
+            Changelog = "Improved Vayne AA Reset",
         },        
         Vladimir = {
             Version = 1.05,
@@ -86,7 +86,7 @@ Data = {
     },
     Dependencies = {
         commonLib = {
-            Version = 1.10,
+            Version = 1.11,
         },
         prediction = {
             Version = 1,
