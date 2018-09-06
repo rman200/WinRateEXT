@@ -175,6 +175,10 @@
         Orbwalker:OnPostAttack(fn)
     end
 
+    local function OnPostAttackTick(fn)
+        Orbwalker:OnPostAttackTick(fn)
+    end
+
     local function SetMovement(bool)
         Orbwalker:SetMovement(bool)
     end
@@ -189,6 +193,10 @@
 
     local function ResetAutoAttack()
         Orbwalker:__OnAutoAttackReset()
+    end
+
+    local function IsAutoAttacking()
+        return Orbwalker:IsAutoAttacking()
     end
 
     local function Orbwalk()

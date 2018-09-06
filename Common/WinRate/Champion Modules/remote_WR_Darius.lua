@@ -61,6 +61,8 @@
             From = myHero,
             Type = "Targetted"
         })
+        self.W.LastReset = 0
+        self.W.LastCast  = 0
     end
 
     function Darius:Menu()
@@ -143,7 +145,8 @@
         self.target = GetTarget(self.Q.Range, 0)
         self.mode = GetMode() 
         --
-        self:UpdateItems()               
+        self:UpdateItems() 
+        self:ResetAA()              
         if myHero.isChanneling then return end        
         self:Auto()
         --
@@ -151,6 +154,13 @@
         local executeMode = 
             self.mode == 1 and self:Combo()   or 
             self.mode == 2 and self:Harass()      
+    end
+
+    function Darius:ResetAA()
+        if Timer() > self.W.LastReset + 1 and HasBuff(myHero, "DariusNoxianTacticsONH") then
+            ResetAutoAttack()
+            self.W.LastReset = Timer()
+        end
     end
 
     function Darius:OnPreMovement(args) --args.Process|args.Target
@@ -181,7 +191,7 @@
         if target.type == Obj_AI_Hero then
             if self.W:IsReady() and ((self.mode == 1 and Menu.W.Combo:Value()) or (self.mode == 2 and Menu.W.Harass:Value())) and ManaPercent(myHero) >= Menu.W.Mana:Value() then
                 self.W:Cast()
-                ResetAutoAttack()
+                self.W.LastCast = Timer()
             elseif self.mode == 1  then
                 self:UseItems(target)
             end  
@@ -223,13 +233,13 @@
                 self.E:Cast(enemy) 
             end                                 
         end        
-        if self.Q:IsReady() and Menu.Q.Combo:Value() and self.target and ((self.W:IsReady() == false and not HasBuff(myHero, "DariusNoxianTacticsONH")) or GetDistance(self.target) > 200) and ManaPercent(myHero) >= Menu.Q.Mana:Value()  then 
+        if self.Q:IsReady() and not IsAutoAttacking() and Menu.Q.Combo:Value() and self.target and ((not self.W:IsReady() and Timer() - self.W.LastCast > 1) or GetDistance(self.target) > 300) and ManaPercent(myHero) >= Menu.Q.Mana:Value()  then 
             self.Q:Cast()
         end        
     end
 
     function Darius:Harass()
-        if self.target and self.Q:IsReady() and Menu.Q.Harass:Value() and ManaPercent(myHero) >= Menu.Q.Mana:Value() then 
+        if self.target and self.Q:IsReady() and not IsAutoAttacking() and Menu.Q.Harass:Value() and ManaPercent(myHero) >= Menu.Q.Mana:Value() then 
             self.Q:Cast()
         end        
     end
