@@ -58,6 +58,7 @@
             From = myHero,
             Type = "Press"
         })
+        self.W.LastReset = Timer()
     end
 
     function Jax:Menu()
@@ -106,11 +107,8 @@
         Menu.R:MenuElement({id = "Heroes", name = "    Duel Targets", type = MENU})                                 
             Menu.R.Heroes:MenuElement({id = "Loading", name = "Loading Champions...", type = SPACE})        
         Menu.R:MenuElement({id = "Mana", name = "Min Mana %", value = 0, min = 0, max = 100, step = 1})             
-        --Jump--
-                                               
-                              
-                      
-
+        --Jump--                                         
+         
         Menu:MenuElement({name = "[WR] "..charName.." Script", drop = {"Release_"..self.scriptVersion}})
 
         --
@@ -145,7 +143,8 @@
         self.enemies = GetEnemyHeroes(1500)
         self.target = GetTarget(self.Q.Range, 0)
         self.mode = GetMode() 
-        --          
+        --  
+        self:ResetAA()        
         if myHero.isChanneling then return end        
         self:Auto()
         self:KillSteal()
@@ -158,6 +157,13 @@
             self.mode == 4 and self:Clear()   or
             self.mode == 5 and self:LastHit() or
             self.mode == 6 and self:Flee()      
+    end
+
+    function Jax:ResetAA()
+        if Timer() > self.W.LastReset + 1 and HasBuff(myHero, "JaxEmpowerTwo") then
+            ResetAutoAttack()
+            self.W.LastReset = Timer()
+        end
     end
 
     function Jax:OnPreMovement(args) --args.Process|args.Target
@@ -193,8 +199,7 @@
         end
         --
         if modeCheck and castCheck and manaCheck then
-            self.W:Cast()
-            --ResetAutoAttack()
+            self.W:Cast()            
         end
     end
 
@@ -283,8 +288,7 @@
             for i=1, #minions do
                 local minion = minions[i]
                 if minion.health >= 20 and self.W:GetDamage(minion) > minion.health then
-                    self.W:Cast()   
-                    ResetAutoAttack()     
+                    self.W:Cast()                         
                     return            
                 end
             end  
