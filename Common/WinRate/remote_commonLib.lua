@@ -176,7 +176,11 @@
     end
 
     local function OnPostAttackTick(fn)
-        Orbwalker:OnPostAttackTick(fn)
+        if Orbwalker.OnPostAttackTick then
+            Orbwalker:OnPostAttackTick(fn)
+        else
+            Orbwalker:OnPostAttack(fn)
+        end
     end
 
     local function SetMovement(bool)
