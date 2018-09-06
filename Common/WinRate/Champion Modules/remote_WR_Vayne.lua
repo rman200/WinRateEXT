@@ -13,7 +13,7 @@
         Callback.Add("Draw",          function() self:OnDraw()    end)
         --[[Orb Callbacks]]
         OnPreAttack(function(...) self:OnPreAttack(...) end)
-        OnPostAttack(function(...) self:OnPostAttack(...) end)
+        OnPostAttackTick(function(...) self:OnPostAttack(...) end)
         OnPreMovement(function(...) self:OnPreMovement(...) end)
         --[[Custom Callbacks]]
         OnInterruptable(function(unit, spell) self:OnInterruptable(unit, spell) end)
@@ -48,6 +48,7 @@
             From = myHero,
             Type = "Press"
         })
+        self.Q.LastReset = Timer()
     end
 
     function Vayne:Menu()
@@ -136,13 +137,22 @@
         self.enemies = GetEnemyHeroes(self.E.Range+self.Q.Range)
         self.target = GetTarget(GetTrueAttackRange(myHero), 0)
         self.mode = GetMode() 
-        --               
+        --   
+        self:ResetAA()            
         if myHero.isChanneling or not self.enemies then return end        
         self:Auto()
         --
         if not self.mode then return end        
         local executeMode = 
             self.mode == 6 and self:Flee()      
+    end
+
+
+    function Vayne:ResetAA()
+        if Timer() > self.Q.LastReset + 1 and HasBuff(myHero, "vaynetumblebonus") then
+            ResetAutoAttack()
+            self.Q.LastReset = Timer()
+        end
     end
 
     function Vayne:OnPreMovement(args) --args.Process|args.Target
@@ -205,15 +215,13 @@
                 local modeCheck = (self.mode == 1 and Menu.Q.Combo:Value()  and ManaPercent(myHero) >= Menu.Q.Mana:Value()) or (self.mode == 2 and Menu.Q.Harass:Value() and ManaPercent(myHero) >= Menu.Q.ManaHarass:Value()) 
                 local tPos = self:GetBestTumblePos()                                          
                 if modeCheck and tPos then 
-                    self.Q:Cast(tPos)
-                    ResetAutoAttack() 
+                    self.Q:Cast(tPos)                     
                 end               
             end            
         elseif self.Q:IsReady() and self.mode and self.mode >= 3 and Menu.Q.Jungle:Value() and ManaPercent(myHero) >= Menu.Q.ManaClear:Value() and tTeam == 300 then
             local tPos = self:GetKitingTumblePos(target)
             if tPos then 
-                self.Q:Cast(tPos)
-                ResetAutoAttack() 
+                self.Q:Cast(tPos)                 
             end
         --elseif self.Q:IsReady() and tType == Obj_AI_Turret then
             --tumble to closest wall
