@@ -192,7 +192,8 @@
             Utils:DownloadFile(SCRIPT_URL, SCRIPT_PATH, "WR.lua")        
             currentData.Loader.Version = latestData.Loader.Version
             Callback.Add("Draw", function() 
-                local str = "Please Reload The Script! [F6]x2"                       
+                local str = "Please Reload The Script! [F6]x2"
+                local res = Game.Resolution()                       
                 Draw.Text(str, 64, res.x/2-(#str * 7), res.y/5, Draw.Color(255,255,0,0))
             end)                
         end
