@@ -149,7 +149,7 @@
     function Utils:CheckDependencies()
         --[[ICs Orbwalker]]
         if not (_G.SDK and _G.SDK.Orbwalker) then
-            Warn("ICs Orbwalker Is Required!")
+            Warn("ICs or GSO Orbwalker Required!")
             return
         end
 

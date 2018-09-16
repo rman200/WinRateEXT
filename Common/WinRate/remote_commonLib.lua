@@ -228,7 +228,7 @@
     end
 
     local function GetPriority(unit)
-        return TargetSelector:GetPriority(unit)
+        return TargetSelector:GetPriority(unit) or 1
     end    
     
     --</IOrbwalker>

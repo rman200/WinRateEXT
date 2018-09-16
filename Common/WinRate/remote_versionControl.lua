@@ -82,11 +82,11 @@ Data = {
         },
     },
     Loader = {
-        Version = 1.04,
+        Version = 1.05,
     },
     Dependencies = {
         commonLib = {
-            Version = 1.11,
+            Version = 1.12,
         },
         prediction = {
             Version = 1,
