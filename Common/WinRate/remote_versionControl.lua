@@ -1,8 +1,8 @@
 Data = {
     Champions = {
         Ashe = {
-            Version = 1.02,
-            Changelog = "Ashe Initial Release",
+            Version = 1.03,
+            Changelog = "Improved Ashe AA Reset",
         },
         Blitzcrank = {
             Version = 1.02,

@@ -12,7 +12,7 @@
         Callback.Add("Draw",          function() self:OnDraw()    end)                
         --[[Orb Callbacks]]        
         OnPreAttack(function(...) self:OnPreAttack(...) end)
-        OnPostAttack(function(...) self:OnPostAttack(...) end)
+        OnPostAttackTick(function(...) self:OnPostAttack(...) end)
         OnPreMovement(function(...) self:OnPreMovement(...) end)
         --[[Custom Callbacks]]        
         OnLoseVision(function(unit) self:OnLoseVision(unit) end)        
@@ -61,6 +61,7 @@
             From = myHero,
             Type = "Skillshot"
         })
+        self.Q.LastReset = Timer()
     end
 
     function Ashe:Menu()
@@ -153,7 +154,8 @@
         self.target = GetTarget(GetTrueAttackRange(myHero), 0)
         self.lastTarget = self.target or self.lastTarget    
         self.mode = GetMode() 
-        --               
+        --
+        self:ResetAA()               
         if myHero.isChanneling then return end        
         self:Auto()
         self:KillSteal()
@@ -163,6 +165,13 @@
             self.mode == 1 and self:Combo()   or 
             self.mode == 2 and self:Harass()  or
             self.mode == 6 and self:Flee()       
+    end
+
+    function Ashe:ResetAA()
+        if Timer() > self.Q.LastReset + 5 and HasBuff(myHero, "AsheQAttack") then                      
+            ResetAutoAttack()
+            self.Q.LastReset = Timer()
+        end
     end
 
     function Ashe:OnPreMovement(args) 
@@ -191,8 +200,7 @@
             local qCombo, qHarass = self.mode == 1 and Menu.Q.Combo:Value() and ManaPercent(myHero) >= Menu.Q.Mana:Value() , not qCombo and self.mode == 2 and Menu.Q.Harass:Value() and ManaPercent(myHero) >= Menu.Q.ManaHarass:Value()
             local qClear = not (qCombo or qHarass) and ((self.mode == 3 and Menu.Q.Clear:Value()) or self.mode == 4 and Menu.Q.Jungle:Value()) and ManaPercent(myHero) >= Menu.Q.ManaClear:Value() and #GetEnemyMinions(500) >= Menu.Q.Min:Value() 
             if qClear or mode == 3 or (tType == Obj_AI_Hero and (mode ~= 4 or qCombo or qHarass)) or (mode == 2 and tType == Obj_AI_Minion and target.team == 300) or (tType == Obj_AI_Turret and mode ~= 4) then
-                self.Q:Cast()
-                ResetAutoAttack()
+                self.Q:Cast()                
             end 
         end        
         if self.W:IsReady() and not HasBuff(myHero, "AsheQAttack") and tType == Obj_AI_Hero then            
