@@ -28,14 +28,18 @@ Data = {
             Version = 1.01,
             Changelog = "Improved Jax AA Reset",
         },
-        Lucian = {
-            Version = 1.04,
-            Changelog = "Lucian Spell Weaving Fix",
-        },
         Jhin = {
             Version = 1.01,
             Changelog = "Jhin Initial Release",
         },
+        Lucian = {
+            Version = 1.04,
+            Changelog = "Lucian Spell Weaving Fix",
+        },
+        Olaf = {
+            Version = 1.00,
+            Changelog = "Olaf Initial Release",
+        },        
         Riven = {
             Version = 1.03,
             Changelog = "Riven R2 Fix",
