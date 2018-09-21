@@ -29,8 +29,8 @@ Data = {
             Changelog = "Improved Jax AA Reset",
         },
         Lucian = {
-            Version = 1.03,
-            Changelog = "Lucian Initial Release",
+            Version = 1.04,
+            Changelog = "Lucian Spell Weaving Fix",
         },
         Jhin = {
             Version = 1.01,

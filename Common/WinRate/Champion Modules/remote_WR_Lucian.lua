@@ -13,7 +13,7 @@ function Lucian:__init()
         Callback.Add("Tick", function() self:OnTick() end)
         Callback.Add("Draw", function() self:OnDraw() end)
         OnPreAttack(function(...) self:OnPreAttack(...) end)
-        OnPostAttack(function(...) self:OnPostAttack(...) end)
+        OnPostAttackTick(function(...) self:OnPostAttack(...) end)
         OnPreMovement(function(...) self:OnPreMovement(...) end)
 end
 
@@ -200,12 +200,6 @@ end
 function Lucian:DashRange(target)
         local pred = target:GetPrediction(huge, 0.25)
         return GetDistance(pred) < (myHero.range + target.boundingRadius + myHero.boundingRadius) and 125 or 425
-end
-
-function Lucian:CastQ(target)
-        if self.Q:IsReady() and self.Q:CanCast(target) then
-                self.Q:Cast(target)
-        end
 end
 
 function Lucian:CastQExtended(target)
