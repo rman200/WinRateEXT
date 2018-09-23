@@ -75,16 +75,25 @@
     local DrawMap                  = Draw.CircleMinimap
     local DrawText                 = Draw.Text
     --
-    local barHeight = 8
-    local barWidth = 103
-    local barXOffset = 18                            
-    local barYOffset = 2
+    local barHeight     = 8
+    local barWidth      = 103
+    local barXOffset    = 18                            
+    local barYOffset    = 10
+    local DmgColor      = DrawColor(255,235,103,25)
+
+    local Color = {
+        Red     = DrawColor(255,255,0,0),
+        Green   = DrawColor(255,0,255,0),
+        Blue    = DrawColor(255,0,0,255),
+        White   = DrawColor(255,255,255,255),
+        Black   = DrawColor(255,0,0,0),
+    }
 
     --<Interfaces Control>
     if not SDK then
         local res, str = Game.Resolution(), "PLEASE ENABLE ICS ORBWALKER"
         Callback.Add("Draw", function()                       
-            DrawText(str, 64, res.x/2-(#str * 14), res.y/2, DrawColor(255,255,0,0))
+            DrawText(str, 64, res.x/2-(#str * 14), res.y/2, Color.Red)
         end)
         return 
     end
@@ -236,7 +245,7 @@
     local function TextOnScreen(str) 
         local res = Game.Resolution()  
         Callback.Add("Draw", function()                  
-            DrawText(str, 64, res.x/2-(#str * 10), res.y/2, DrawColor(255,255,0,0))
+            DrawText(str, 64, res.x/2-(#str * 10), res.y/2, Color.Red)
         end)
     end
  
@@ -288,7 +297,7 @@
     local rotateAngle = 0
     local function DrawMark(pos, thickness, size, color)
         rotateAngle = (rotateAngle + 2) % 720
-        local hPos, thickness, color, size = pos or myHero.pos, thickness or 3, color or DrawColor(255,255,0,0), size*2 or 150
+        local hPos, thickness, color, size = pos or myHero.pos, thickness or 3, color or Color.Red, size*2 or 150
         local offset, rotateAngle, mod = hPos + Vector(0, 0, size), rotateAngle/360 * pi , 240/360*pi    
         local points = {
             hPos:To2D(),
@@ -681,6 +690,99 @@
         return S1, S2
     end
 
+    function PassivePercentMod(source, target, dmgMod)        
+        local tarMinion = target.type == Obj_AI_Minion and target        
+        local newMod = dmgMod
+
+        if source.type == Obj_AI_Turret then
+            if tarMinion and (tarMinion.charName:find("MinionSiege") or tarMinion.charName:find("MinionSuper")) then
+                newMod = newMod * 0.7
+            end
+        end
+
+        if source.type == Obj_AI_Minion then
+            if tarMinion and Game.mapID == 10 then
+                newMod = newMod * (1 + minion.percentDamageToBarracksMinionMod)
+            end
+        end
+
+        if tarMinion then
+            if tarMinion.charName:find("MinionMelee") and HasBuff(tarMinion, "exaltedwithbaronnashorminion") then
+                newMod = newMod * 0.25
+            end
+        end
+
+        if source.type == Obj_AI_Hero then            
+            if tarMinion then
+                if HasBuff(source, "barontarget") and tarMinion.charName:find("SRU_Baron") then
+                    newMod = newMod * 0.5
+                end
+            end
+        end
+
+        return newMod
+    end
+
+    function CalcMagicalDamage(source, target, amount, time)
+        local passiveMod = 0
+
+        local totalMR = target.magicResist + target.bonusMagicResist
+        if totalMR < 0 then
+            passiveMod = 2 - 100 / (100 - totalMR)
+        elseif totalMR * source.magicPenPercent - source.magicPen < 0 then
+            passiveMod = 1
+        else
+            passiveMod = 100 / (100 + totalMR * source.magicPenPercent - source.magicPen)
+        end
+
+        local dmg = max(floor(PassivePercentMod(source, target, passiveMod) * amount), 0)
+
+        if HasBuff(target, "cursedtouch") then
+            return dmg + amount * 0.1
+        end
+
+        return dmg
+    end
+
+    function CalcPhysicalDamage(source, target, amount, time)    
+        local penPercent  = source.armorPenPercent
+        local penPercentBonus = source.bonusArmorPenPercent
+        local penFlat     = source.armorPen * (0.6 + 0.4 * source.levelData.lvl / 18)
+       
+        if type(penFlat) ~= 'number' then
+            penFlat = 0
+        end
+
+        if source.type == Obj_AI_Minion then
+            penFlat = 0
+            penPercent = 1
+            penPercentBonus = 1
+        elseif source.type == Obj_AI_Turret then
+            penFlat = 0
+            penPercentBonus = 1
+            penPercent = 0.7            
+        end
+
+        local armor = target.armor
+        local bonusArmor = target.bonusArmor
+
+        local value
+
+        if armor < 0 then
+            value = 2 - 100 / (100 - armor)
+        elseif armor * penPercent - bonusArmor * (1 - penPercentBonus) - penFlat < 0 then
+            value = 1
+        else
+            value = 100 / (100 + armor * penPercent - bonusArmor * (1 - penPercentBonus) - penFlat)
+        end
+
+        return max(floor(PassivePercentMod(source, target, value) * amount), 0)
+    end
+
+    function CalcMixedDamage(source, target, physicalAmount, magicalAmount)
+        return CalcPhysicalDamage(source, target, physicalAmount) + CalcMagicalDamage(source, target, magicalAmount)
+    end
+
     class "Spell"
 
     function Spell:__init(SpellData)
@@ -692,25 +794,10 @@
         self.Width      = SpellData.Width or SpellData.Radius or 0
         self.From       = SpellData.From or myHero
         self.Collision  = SpellData.Collision or false
-        self.Type       = SpellData.Type or "Press"
+        self.Type       = SpellData.Type or "Press" 
+        self.DmgType    = SpellData.DmgType or "Physical"       
         --
         return self
-    end
-
-    function Spell:SetRange(value)
-        self.Range = value
-    end
-
-    function Spell:SetRadius(value)
-        self.Radius = value
-    end
-
-    function Spell:SetSpeed(value)
-        self.Speed = value
-    end
-
-    function Spell:SetFrom(value)
-        self.From = value
     end
 
     function Spell:IsReady()
@@ -743,37 +830,31 @@
         return GetBestCircularFarmPos(self)
     end
 
+    function Spell:CalcDamage(target)
+        local rawDmg = self:GetDamage(target, stage)
+        if rawDmg <= 0 then return 0 end        
+        --
+        local damage = 0        
+        if self.DmgType == 'Magical' then
+            damage = CalcMagicalDamage(self.From, target, rawDmg)
+        elseif self.DmgType == 'Physical' then
+            damage = CalcPhysicalDamage(self.From, target, rawDmg);
+        elseif self.DmgType == 'Mixed' then
+            damage = CalcMixedDamage(self.From, target, rawDmg * .5, rawDmg * .5)
+        elseif self.DmgType == 'True' then
+            damage = rawDmg
+        end
+
+        return damage
+    end
+
     function Spell:GetDamage(target, stage)
         local slot = self:SlotToString()
-        return getdmg(slot, target, self.From, stage or 1)
-    end
-
-    function Spell:OnDash(target)
-        local OnDash, CanHit, Pos = Prediction:IsDashing(target, self)
-
-        if self.Collision then
-            local colStatus = #(mCollision(self.From.pos, Pos, self)) > 0
-            if colStatus then return end
-            return OnDash, CanHit, Pos
-        end
-
-        return OnDash, CanHit, Pos
-    end
-
-    function Spell:OnImmobile(target)
-        local TargetImmobile, ImmobilePos, ImmobileCastPosition = Prediction:IsImmobile(target, self)
-
-        if self.Collision then
-            local colStatus = #(mCollision(self.From.pos, Pos, self)) > 0
-            if colStatus then return end
-            return TargetImmobile, ImmobilePos, ImmobileCastPosition
-        end
-
-        return TargetImmobile, ImmobilePos, ImmobileCastPosition
+        return self:IsReady() and getdmg(slot, target, self.From, stage or 1) or 0
     end
 
     function Spell:SlotToHK()
-        return ({ [_Q] = HK_Q, [_W] = HK_W, [_E] = HK_E, [_R] = HK_R, [SUMMONER_1] = HK_SUMMONER_1, [SUMMONER_2] = HK_SUMMONER_2})[self.Slot]
+        return ({[_Q] = HK_Q, [_W] = HK_W, [_E] = HK_E, [_R] = HK_R, [SUMMONER_1] = HK_SUMMONER_1, [SUMMONER_2] = HK_SUMMONER_2})[self.Slot]
     end
 
     function Spell:SlotToString()
@@ -792,16 +873,21 @@
         local pos  = castOn.x and castOn
         local targ = castOn.health and castOn 
         --           
-        --if self.Type == "AOE" and targ then
-        --    local bestPos, hit = self:GetBestCircularCastPos(targ, GetEnemyHeroes(self.Range+self.Radius))
-        --    pos = hit >= 2 and bestPos or pos
-        --end
+        if self.Type == "AOE" and pos then
+            local bestPos, hit = self:GetBestCircularCastPos(targ, GetEnemyHeroes(self.Range+self.Radius))
+            pos = hit >= 2 and bestPos or pos
+        end
         --        
         if (targ and not targ.pos:To2D().onScreen) then
             return  
         elseif (pos and not pos:To2D().onScreen) then
-            pos = myHero.pos:Extended(pos, 200)
-            if self.Type == "AOE" or not pos:To2D().onScreen then return end                                               
+            if self.Type == "AOE" then
+                local mapPos = pos:ToMM()                
+                Control.CastSpell(slot, mapPos.x, mapPos.y) 
+            else
+                pos = myHero.pos:Extended(pos, 200)
+                if not pos:To2D().onScreen then return end
+            end                                               
         end
         --                       
         return Control.CastSpell(slot, targ or pos)
@@ -816,34 +902,62 @@
         end
     end
 
-    function Spell:DrawDmg(hero, dmgModMultiplier, dmgModFlat, stage)
-        local barPos = hero.hpBar
+    local function DrawDmg(hero, damage)
+        local screenPos = hero.pos:To2D()
+        local barPos = {x=screenPos.x-50, y=screenPos.y-150, onScreen = screenPos.onScreen}
         if barPos.onScreen then                
-            local damage = (self:IsReady() and 1 or 0) * self:GetDamage(hero, stage) * (dmgModMultiplier or 1) + (dmgModFlat or 0)
             local percentHealthAfterDamage = max(0, hero.health - damage) / hero.maxHealth
-            local xPosEnd = barPos.x + barXOffset+ barWidth * hero.health/hero.maxHealth
-            local xPosStart = barPos.x +barXOffset+  percentHealthAfterDamage * 100                            
-            DrawLine(xPosStart, barPos.y + barYOffset, xPosEnd, barPos.y + barYOffset, 10, Draw.Color(255,235,103,25))                
+            local xPosEnd   = barPos.x + barXOffset+ barWidth * hero.health/hero.maxHealth
+            local xPosStart = barPos.x + barXOffset+ percentHealthAfterDamage * 100                            
+            DrawLine(xPosStart, barPos.y + barYOffset, xPosEnd, barPos.y + barYOffset, 10, DmgColor)
+            DrawText(tostring(damage), 50, barPos.x-hero.boundingRadius, barPos.y, DrawColor(255, 66, 244, 98))                
         end        
     end
 
+    local function DrawSpells(instance)
+        local drawSettings = Menu.Draw
+        if drawSettings.ON:Value() then            
+            local qLambda = drawSettings.Q:Value() and instance.Q and instance.Q:Draw(66, 244, 113)
+            local wLambda = drawSettings.W:Value() and instance.W and instance.W:Draw(66, 229, 244)
+            local eLambda = drawSettings.E:Value() and instance.E and instance.E:Draw(244, 238, 66)
+            local rLambda = drawSettings.R:Value() and instance.R and instance.R:Draw(244, 66, 104)
+            local tLambda = drawSettings.TS:Value() and instance.target and DrawMark(instance.target.pos, 3, instance.target.boundingRadius, Color.Red)
+            if instance.enemies and drawSettings.Dmg:Value() then
+                for i=1, #instance.enemies do
+                    local enemy = instance.enemies[i]
+                    local qDmg, wDmg, eDmg, rDmg = instance.Q:CalcDamage(enemy), instance.W:CalcDamage(enemy), instance.E:CalcDamage(enemy), instance.R:CalcDamage(enemy)
+                    
+                    DrawDmg(enemy, qDmg+wDmg+eDmg+rDmg)
+                end 
+            end 
+        end
+    end
+
     function Spell:Draw(r, g, b)
+        if not self.DrawColor then 
+            self.DrawColor  = DrawColor(255, r, g, b)
+            self.DrawColor2 = DrawColor(80 , r, g, b)
+        end
         if self.Range and self.Range ~= huge then
             if self:IsReady() then 
-                DrawCircle(self.From.pos, self.Range, 5, DrawColor(255, r, g, b))
+                DrawCircle(self.From.pos, self.Range, 5, self.DrawColor)
             else
-                DrawCircle(self.From.pos, self.Range, 5, DrawColor(80, r, g, b))
+                DrawCircle(self.From.pos, self.Range, 5, self.DrawColor2)
             end
             return true
         end
     end  
 
     function Spell:DrawMap(r, g, b)
+        if not self.DrawColor then 
+            self.DrawColor  = DrawColor(255, r, g, b)
+            self.DrawColor2 = DrawColor(80 , r, g, b)
+        end
         if self.Range and self.Range ~= huge then
             if self:IsReady() then 
-                DrawMap(self.From.pos, self.Range, 5, DrawColor(255, r, g, b))
+                DrawMap(self.From.pos, self.Range, 5, self.DrawColor)
             else
-                DrawMap(self.From.pos, self.Range, 5, DrawColor(80, r, g, b))
+                DrawMap(self.From.pos, self.Range, 5, self.DrawColor2)
             end
             return true
         end        
