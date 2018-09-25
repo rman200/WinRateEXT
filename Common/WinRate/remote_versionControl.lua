@@ -41,8 +41,8 @@ Data = {
             Changelog = "Olaf Initial Release",
         },        
         Riven = {
-            Version = 1.03,
-            Changelog = "Riven R2 Fix",
+            Version = 1.04,
+            Changelog = "Riven Dmg Calc Update",
         },
         Sion = {
             Version = 1.02,

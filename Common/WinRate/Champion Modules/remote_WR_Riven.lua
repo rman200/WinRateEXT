@@ -75,7 +75,27 @@
         })
         self.Q.Stacks = 0 
         self.Q.LastCast  = Timer()
-
+        self.Q.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local qLvl = myHero:GetSpellData(_Q).level 
+            return -5 + 20*qLvl + (0.40 + 0.05*qLvl) * myHero.totalDamage                
+        end
+        self.W.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local wLvl = myHero:GetSpellData(_W).level 
+            return 25 + 30*wLvl + myHero.bonusDamage                
+        end
+        self.R2.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local rLvl = myHero:GetSpellData(_W).level
+            local mod  = 1 + ((100 - HealthPercent(enemy)) * 0.02667) 
+            --
+            return (50 + 50*rLvl + 0.6* myHero.bonusDamage) * mod                
+        end
+        
     end
 
     function Riven:Menu()
@@ -269,7 +289,7 @@
             for i=1, #self.enemies do  
                 local target = self.enemies[i]
                 if IsValidTarget(target) then --checks for immortal and etc                        
-                    local dmg = getdmg("R", target)                 
+                    local dmg = self.R2:CalcDamage(target)                 
                     if dmg > target.health + target.shieldAD then                        
                         self:CastR2(target, 2)
                     end
@@ -402,9 +422,9 @@
             for i=1, #minions do
                 local minion = minions[i]
                 self:UseItems(minion) 
-                if wClear and minion.distance <= self.W.Range and getdmg("W", minion) >= minion.health then                
+                if wClear and minion.distance <= self.W.Range and self.W:CalcDamage(minion) >= minion.health then                
                     self:PressKey(HK_W); return
-                elseif qClear and minion.distance <= self.Q.Range and getdmg("Q", minion) >= minion.health then                
+                elseif qClear and minion.distance <= self.Q.Range and self.Q:CalcDamage(minion) >= minion.health then                
                     self:CastQ(minion); return                    
                 end         
             end            
@@ -754,7 +774,7 @@
 
     function Riven:CheckCastR2(target)
         if not (IsValidTarget(target) and self:IsR2()) then return end
-        local rDmg, aaDmg = getdmg("R", target), getdmg("AA", target)
+        local rDmg, aaDmg = self.R2:CalcDamage(target), CalcPhysicalDamage(myHero, target, myHero.totalDamage)
         --        
         local rBuff = GetBuffByName(myHero, "rivenwindslashready") 
         local time = Timer()      
@@ -813,15 +833,15 @@
         if self.Q:IsReady() or HasBuff(myHero, "RivenTriCleave") then
             local Qleft = 3 - self.Q.Stacks 
             local Qpassive = Qleft * (1+self:GetPassive())            
-            damage = damage +  getdmg("Q", target) * (Qleft + Qpassive)
+            damage = damage +  self.Q:CalcDamage(target) * (Qleft + Qpassive)
         end
         if self.W:IsReady() then
-            damage = damage + getdmg("W", target)
+            damage = damage + self.W:CalcDamage(target)
         end
         if self.R1:IsReady() then
-            damage = damage + getdmg("R", target)
+            damage = damage + self.R2:CalcDamage(target)
         end
-        damage = damage + getdmg("AA", target)
+        damage = damage + CalcPhysicalDamage(myHero, target, myHero.totalDamage)
         return damage        
     end
 
