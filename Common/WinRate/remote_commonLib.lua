@@ -949,7 +949,6 @@
             local xPosEnd   = barPos.x + barXOffset+ barWidth * hero.health/hero.maxHealth
             local xPosStart = barPos.x + barXOffset+ percentHealthAfterDamage * 100                            
             DrawLine(xPosStart, barPos.y + barYOffset, xPosEnd, barPos.y + barYOffset, 10, DmgColor)
-            DrawText(tostring(damage), 50, barPos.x-hero.boundingRadius, barPos.y, Color.Green)                
         end        
     end
 
