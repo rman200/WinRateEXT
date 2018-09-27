@@ -192,6 +192,12 @@
         end
     end
 
+    local function OnUnkillableMinion(fn)
+        if Orbwalker.OnUnkillableMinion then
+            Orbwalker:OnUnkillableMinion(fn)
+        end
+    end
+
     local function SetMovement(bool)
         Orbwalker:SetMovement(bool)
     end
@@ -723,6 +729,17 @@
         return newMod
     end
 
+    local reductions = {
+        ["Alistar"]  = function(t) return HasBuff(t, "FerociousHowl")          and (0.45 + 0.1*t:GetSpellData(_R).level) end,
+        ["Annie"]    = function(t) return HasBuff(t, "AnnieE")                 and (0.10 + 0.06*t:GetSpellData(_E).level) end,
+        ["Galio"]    = function(t) return HasBuff(t, "GalioW")                 and (0.15 + 0.05*t:GetSpellData(_W).level + 0.08 * t.bonusMagicResist/100) end,
+        ["Garen"]    = function(t) return HasBuff(t, "GarenW")                 and (0.30) end,
+        ["Gragas"]   = function(t) return HasBuff(t, "gragaswself")            and (0.08 + 0.02*t:GetSpellData(_W).level + 0.04 * t.ap/100) end,
+        ["Irelia"]   = function(t) return HasBuff(t, "ireliawdefense")         and (0.40 + 0.05*t:GetSpellData(_W).level + 0.07 * t.ap/100) end,
+        ["Malzahar"] = function(t) return HasBuff(t, "malzaharpassiveshield")  and (0.90) end,
+        ["MasterYi"] = function(t) return HasBuff(t, "Meditate")               and (0.45 + 0.05*t:GetSpellData(_W).level) end,
+        ["Warwick"]  = function(t) return HasBuff(t, "WarwickE")               and (0.30 + 0.05*t:GetSpellData(_E).level) end,     
+    }
     function CalcMagicalDamage(source, target, amount, time)
         local passiveMod = 0
 
@@ -737,9 +754,20 @@
 
         local dmg = max(floor(PassivePercentMod(source, target, passiveMod) * amount), 0)
 
-        if HasBuff(target, "cursedtouch") then
-            return dmg + amount * 0.1
+        if target.charName == "Kassadin" then
+            dmg = dmg * 0.85
+        elseif reductions[target.charName] then
+            local reduction = reductions[target.charName](target) or 0
+            dmg = dmg * (1-reduction)
         end
+
+        if HasBuff(target, "cursedtouch") then
+            dmg = dmg + amount * 0.1
+        end 
+
+        if HasBuff(myHero, "abyssalscepteraura") then
+            damage = damage * 1.15
+        end       
 
         return dmg
     end
@@ -748,10 +776,6 @@
         local penPercent  = source.armorPenPercent
         local penPercentBonus = source.bonusArmorPenPercent
         local penFlat     = source.armorPen * (0.6 + 0.4 * source.levelData.lvl / 18)
-       
-        if type(penFlat) ~= 'number' then
-            penFlat = 0
-        end
 
         if source.type == Obj_AI_Minion then
             penFlat = 0
@@ -776,7 +800,12 @@
             value = 100 / (100 + armor * penPercent - bonusArmor * (1 - penPercentBonus) - penFlat)
         end
 
-        return max(floor(PassivePercentMod(source, target, value) * amount), 0)
+        local dmg = max(floor(PassivePercentMod(source, target, value) * amount), 0)
+        if reductions[target.charName] then
+            local reduction = reductions[target.charName](target) or 0
+            dmg = dmg * (1-reduction)
+        end
+        return dmg
     end
 
     function CalcMixedDamage(source, target, physicalAmount, magicalAmount)
@@ -836,14 +865,24 @@
         --
         local damage = 0        
         if self.DmgType == 'Magical' then
-            damage = CalcMagicalDamage(self.From, target, rawDmg)
+            damage = CalcMagicalDamage(self.From, target, rawDmg)                        
         elseif self.DmgType == 'Physical' then
             damage = CalcPhysicalDamage(self.From, target, rawDmg);
         elseif self.DmgType == 'Mixed' then
             damage = CalcMixedDamage(self.From, target, rawDmg * .5, rawDmg * .5)
-        elseif self.DmgType == 'True' then
-            damage = rawDmg
         end
+
+        if self.DmgType ~= 'True' then
+            if HasBuff(myHero, "summonerexhaustdebuff") then
+                damage = damage * .6
+            elseif HasBuff(myHero, "itemsmitechallenge") then
+                damage = damage * .6
+            elseif HasBuff(myHero, "itemphantomdancerdebuff") then
+                damage = damage * .88
+            end          
+        else
+            damage = rawDmg
+        end       
 
         return damage
     end
@@ -910,11 +949,11 @@
             local xPosEnd   = barPos.x + barXOffset+ barWidth * hero.health/hero.maxHealth
             local xPosStart = barPos.x + barXOffset+ percentHealthAfterDamage * 100                            
             DrawLine(xPosStart, barPos.y + barYOffset, xPosEnd, barPos.y + barYOffset, 10, DmgColor)
-            DrawText(tostring(damage), 50, barPos.x-hero.boundingRadius, barPos.y, DrawColor(255, 66, 244, 98))                
+            DrawText(tostring(damage), 50, barPos.x-hero.boundingRadius, barPos.y, Color.Green)                
         end        
     end
 
-    local function DrawSpells(instance)
+    local function DrawSpells(instance, extrafn)
         local drawSettings = Menu.Draw
         if drawSettings.ON:Value() then            
             local qLambda = drawSettings.Q:Value() and instance.Q and instance.Q:Draw(66, 244, 113)
@@ -928,6 +967,9 @@
                     local qDmg, wDmg, eDmg, rDmg = instance.Q:CalcDamage(enemy), instance.W:CalcDamage(enemy), instance.E:CalcDamage(enemy), instance.R:CalcDamage(enemy)
                     
                     DrawDmg(enemy, qDmg+wDmg+eDmg+rDmg)
+                    if extrafn then
+                        extrafn(enemy)
+                    end
                 end 
             end 
         end
