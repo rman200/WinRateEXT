@@ -60,6 +60,10 @@ Data = {
             Version = 1.00,
             Changelog = "Teemo Initial Release",
         },
+        Thresh = {
+            Version = 1.00,
+            Changelog = "Thresh Initial Release",
+        },
         TwistedFate = {
             Version = 1.01,
             Changelog = "TF Initial Release",
