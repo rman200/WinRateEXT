@@ -32,6 +32,10 @@ Data = {
             Version = 1.01,
             Changelog = "Jhin Initial Release",
         },
+        Kalista = {
+            Version = 1.00,
+            Changelog = "Kalista Initial Release",
+        },
         Lucian = {
             Version = 1.04,
             Changelog = "Lucian Spell Weaving Fix",
