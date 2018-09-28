@@ -1,15 +1,15 @@
 Data = {
     Champions = {
         Ashe = {
-            Version = 1.03,
+            Version = 1.04,
             Changelog = "Improved Ashe AA Reset",
         },
         Blitzcrank = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Fixed bug on R KS",
         },
         Corki = {
-            Version = 1.04,
+            Version = 1.05,
             Changelog = "OnDash Typo Fix",
         },
         Darius = {
@@ -17,19 +17,19 @@ Data = {
             Changelog = "Improved Dmg Calculation",
         },
         Draven = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Draven Initial Release",
         },
         Ezreal = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Ezreal LastHit Fix",
         },
         Jax = {
-            Version = 1.01,
+            Version = 1.02,
             Changelog = "Improved Jax AA Reset",
         },
         Jhin = {
-            Version = 1.01,
+            Version = 1.02,
             Changelog = "Jhin Initial Release",
         },
         Kalista = {
@@ -49,7 +49,7 @@ Data = {
             Changelog = "Riven Dmg Calc Update",
         },
         Sion = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Sion Initial Release",
         },
         Syndra = {
@@ -57,11 +57,11 @@ Data = {
             Changelog = "Improved Dmg Calculation",
         },
         Talon = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Talon Initial Release",
         },
         Teemo = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Teemo Initial Release",
         },
         Thresh = {
@@ -69,7 +69,7 @@ Data = {
             Changelog = "Thresh Initial Release",
         },
         TwistedFate = {
-            Version = 1.01,
+            Version = 1.02,
             Changelog = "TF Initial Release",
         },
         Twitch = {
@@ -77,15 +77,15 @@ Data = {
             Changelog = "Improved Dmg Calculation",
         },
         Varus = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Varus Initial Release",
         },
         Vayne = {
-            Version = 1.02,
+            Version = 1.03,
             Changelog = "Improved Vayne AA Reset",
         },        
         Vladimir = {
-            Version = 1.05,
+            Version = 1.06,
             Changelog = "Vladimir Initial Release",
         },
         Xayah = {

@@ -170,13 +170,9 @@
     end
 
     function Teemo:OnDraw()
-        local drawSettings = Menu.Draw
-        if drawSettings.ON:Value() then            
-            local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113)
-            local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
-            local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
-            local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)
-            local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0))
+        DrawSpells(self)
+        --
+        if Menu.Draw.ON:Value() then            
             if self.nearbySpots and Menu.R.Draw:Value() then
                 for i=1, #self.nearbySpots do
                     local spot = self.nearbySpots[i]
