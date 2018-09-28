@@ -59,10 +59,19 @@
             Radius = huge,
             Collision = false,
             From = myHero,
-            Type = "Targetted"
+            Type = "Targetted",
+            DmgType = "True"
         })
         self.W.LastReset = 0
         self.W.LastCast  = 0
+        --
+        self.R.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local rLvl = myHero:GetSpellData(_R).level
+            --
+            return (100*rLvl + 0.75 * myHero.bonusDamage)               
+        end
     end
 
     function Darius:Menu()
@@ -216,7 +225,7 @@
         if self.enemies and (Menu.R.Auto:Value() or (Menu.R.Combo:Value() and self.mode == 1)) and self.R:IsReady() then
             for i=1, #(self.enemies) do
                 local enemy = self.enemies[i]                                            
-                if self.R:GetDamage(enemy) * self:GetUltMultiplier(enemy) >= enemy.health + enemy.shieldAD then
+                if self.R:CalcDamage(enemy) * self:GetUltMultiplier(enemy) >= enemy.health + enemy.shieldAD then
                     self.R:Cast(enemy)
                     break
                 end
@@ -245,26 +254,12 @@
     end
 
     function Darius:OnDraw()
-        local drawSettings = Menu.Draw
         if Menu.Q.Auto:Value() and HasBuff(myHero, "dariusqcast") and self.target then
             self.moveTo = self.target:GetPrediction(huge, 0.2):Extended(myHero.pos, ((self.Q.Radius + self.Q.Range)/2))
         else
             self.moveTo = nil 
         end        
-        if drawSettings.ON:Value() then                                
-            local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113)
-            local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
-            local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
-            local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)
-            local mLambda = drawSettings.Helper:Value() and self.moveTo and Draw.Circle(self.moveTo, 50)
-            local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0))
-            if self.enemies and drawSettings.Dmg:Value() and self.R:IsReady() then
-                for i=1, #self.enemies do
-                    local enemy = self.enemies[i]                                        
-                    self.R:DrawDmg(enemy, self:GetUltMultiplier(enemy), 0)
-                end 
-            end 
-        end    
+        DrawSpells(self)  
     end
 
     function Darius:GetStacks(target)
@@ -273,7 +268,7 @@
     end
 
     function Darius:GetUltMultiplier(target)
-        return 0.855 * (1 +0.2 * self:GetStacks(target) + Menu.R.Tweak:Value()/100) --0.84 because dmgLib is off        
+        return (1 +0.2 * self:GetStacks(target) + Menu.R.Tweak:Value()/100)        
     end
 
     local ItemHotKey = {[ITEM_1] = HK_ITEM_1, [ITEM_2] = HK_ITEM_2, [ITEM_3] = HK_ITEM_3, [ITEM_4] = HK_ITEM_4, [ITEM_5] = HK_ITEM_5, [ITEM_6] = HK_ITEM_6}

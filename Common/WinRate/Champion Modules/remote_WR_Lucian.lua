@@ -48,7 +48,8 @@ function Lucian:Spells()
                 Radius = 40,
                 Collision = true,
                 From = myHero,
-                Type = "Skillshot"
+                Type = "Skillshot",
+                DmgType = "Magical"
         })
 
         self.E = Spell({
@@ -67,6 +68,18 @@ function Lucian:Spells()
                 From = myHero,
                 Type = "Skillshot"
         })
+        self.Q.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local qLvl = myHero:GetSpellData(_Q).level 
+            return 50 + 35*qLvl + (0.45 + 0.15*qLvl) * myHero.bonusDamage                
+        end
+        self.W.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local wLvl = myHero:GetSpellData(_W).level
+            return (45 + 40*wLvl + 0.9* myHero.ap)                 
+        end
 end
 
 function Lucian:Menu()
@@ -322,7 +335,7 @@ function Lucian:KillSteal()
 
                 local useQ = Menu.Q.KS:Value()
                 if self.Q:IsReady() and self.Q:CanCast(unit) and useQ and self:WhiteListValue(Menu.Q.KSWhiteList, unit) then
-                        local damage = self.Q:GetDamage(unit)
+                        local damage = self.Q:CalcDamage(unit)
 
                         if health + shield < damage then
                                 self.Q:Cast(unit)
@@ -331,7 +344,7 @@ function Lucian:KillSteal()
 
                 local useW = Menu.W.KS:Value()
                 if self.W:IsReady() and self.W:CanCast(unit) and useW and self:WhiteListValue(Menu.W.KSWhiteList, unit) then
-                        local damage = self.W:GetDamage(unit)
+                        local damage = self.W:CalcDamage(unit)
 
                         if health + shield < damage then
                                 self:CastW(unit, false, false)
@@ -367,15 +380,12 @@ function Lucian:OnDraw()
             self.moveTo = myHero.pos+enemyMovement    
         else
             self.moveTo = nil 
-        end 
-        local drawSettings = Menu.Draw
-        if drawSettings.ON:Value() then            
-                local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113) and self.Q2:Draw(66, 244, 113)
-                local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
-                local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
-                local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)            
-                local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0)) 
-        end 
+        end
+        DrawSpells(self, function(enemy)
+            if Menu and Menu.Draw.Q:Value() and self.Q2 then
+                self.Q2:Draw(66, 244, 113)                
+            end        
+        end)        
 end
 
 function Lucian:OnPreMovement(args) 

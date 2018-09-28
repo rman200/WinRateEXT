@@ -60,6 +60,17 @@
             From = myHero,
             Type = "Press"
         })
+        self.E.GetDamage = function(self, enemy, stage)
+            if not self:IsReady() then return 0 end
+            --
+            local eLvl = myHero:GetSpellData(_E).level  
+            local stacks = Twitch.poisonTable[enemy.networkID].stacks
+            if stacks ~= 0 then
+                local baseDmg, stacksDmg = 10 + 10 * eLvl, (10+5*eLvl + 0.35 * myHero.bonusDamage + 0.2 * myHero.ap) * stacks
+                return baseDmg+stacksDmg
+            end
+            return 0
+        end
     end
 
     function Twitch:Menu()
@@ -261,26 +272,15 @@
     end
 
     function Twitch:OnDraw()
-        local drawSettings = Menu.Draw
-        if drawSettings.ON:Value() then            
-            local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113)
-            local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
-            local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
-            local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)
-            local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0))
-            if self.enemies and drawSettings.Dmg:Value() then
-                for i=1, #self.enemies do
-                    local enemy = self.enemies[i]                                  
-                    self.R:DrawDmg(enemy, 0, self.poisonTable[enemy.networkID].dmg)
-                end 
-            end
+        DrawSpells(self)
+        --
+        if Menu.Draw.ON:Value() then            
             for k, enemy in pairs(self.Killable) do                    
                 local pos = enemy.toScreen
                 if pos.onScreen and IsValidTarget(enemy, self.E.Range) then
                     DrawText("Killable", 50, pos.x-enemy.boundingRadius, pos.y, DrawColor(255, 66, 244, 98))                    
                 end
-            end
-            
+            end            
         end    
     end
 
@@ -323,7 +323,7 @@
                 self.poisonTable[ID].stacks = 0
             end
             --  
-            local eDmg = self:CalcDamage(enemy)
+            local eDmg = self.E:CalcDamage(enemy)
             self.poisonTable[ID].dmg = eDmg                   
             if eDmg >= enemy.health + enemy.shieldAD then                
                 self.Killable[ID] = enemy
@@ -333,4 +333,4 @@
         end        
     end 
 
-    Twitch()
+    _G["Twitch"] = Twitch()

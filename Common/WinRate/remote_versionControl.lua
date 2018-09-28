@@ -13,8 +13,8 @@ Data = {
             Changelog = "OnDash Typo Fix",
         },
         Darius = {
-            Version = 1.03,
-            Changelog = "Improved Darius AA Reset",
+            Version = 1.04,
+            Changelog = "Improved Dmg Calculation",
         },
         Draven = {
             Version = 1.02,
@@ -37,15 +37,15 @@ Data = {
             Changelog = "Kalista Initial Release",
         },
         Lucian = {
-            Version = 1.04,
-            Changelog = "Lucian Spell Weaving Fix",
+            Version = 1.05,
+            Changelog = "Improved Dmg Calculation",,
         },
         Olaf = {
-            Version = 1.00,
-            Changelog = "Olaf Initial Release",
+            Version = 1.01,
+            Changelog = "Improved Dmg Calculation",,
         },        
         Riven = {
-            Version = 1.04,
+            Version = 1.05,
             Changelog = "Riven Dmg Calc Update",
         },
         Sion = {
@@ -53,8 +53,8 @@ Data = {
             Changelog = "Sion Initial Release",
         },
         Syndra = {
-            Version = 1.01,
-            Changelog = "Syndra Initial Release",
+            Version = 1.02,
+            Changelog = "Improved Dmg Calculation",,
         },
         Talon = {
             Version = 1.00,
@@ -73,8 +73,8 @@ Data = {
             Changelog = "TF Initial Release",
         },
         Twitch = {
-            Version = 1.03,
-            Changelog = "Combo/Harass E Fixed \n Ult Can Now Be Disabled",
+            Version = 1.04,
+            Changelog = "Improved Dmg Calculation",,
         },
         Varus = {
             Version = 1.00,

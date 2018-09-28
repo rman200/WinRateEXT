@@ -1,5 +1,5 @@
 
-    class 'Syndra'  
+    local Syndra = {}
 
     function Syndra:__init()
         --[[Data Initialization]]        
@@ -28,7 +28,8 @@
             Radius = 150,
             Collision = false,
             From = myHero,
-            Type = "AOE"
+            Type = "AOE",
+            DmgType = "Magical"
         })
         self.QE = Spell({ 
             Slot = 2,          
@@ -38,6 +39,7 @@
             Radius = 60,
             Collision = false,
             From = myHero,
+            Type = "Skillshot",
         })
         self.W = Spell({
             Slot = 1,
@@ -47,7 +49,8 @@
             Radius = 100,
             Collision = false,
             From = myHero,
-            Type = "AOE"
+            Type = "AOE",
+            DmgType = "Magical"
         })
         self.E = Spell({
             Slot = 2,
@@ -57,7 +60,8 @@
             Radius = 100,
             Collision = false,
             From = myHero,
-            Type = "Skillshot"
+            Type = "Skillshot",
+            DmgType = "Magical"
         })
         self.R = Spell({
             Slot = 3,
@@ -67,7 +71,8 @@
             Radius = 0,
             Collision = false,
             From = myHero,
-            Type = "Targetted"
+            Type = "Targetted",
+            DmgType = "Magical"
         })
         self.OrbData = {
             Obj = {},
@@ -75,6 +80,36 @@
             SearchParticles = true,
             SearchMissiles  = true,
         }
+        self.Q.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local qLvl = myHero:GetSpellData(_Q).level
+            local dmg = 30 + 40*qLvl + 0.65 * myHero.ap
+            --            
+            if qLvl == 5 and enemy.type == Obj_AI_Hero then
+                dmg = dmg + 34.5 + 0.0975 * myHero.ap
+            end
+            return dmg                
+        end
+        self.W.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local wLvl = myHero:GetSpellData(_W).level
+            local dmg = 30 + 40*wLvl + 0.7 * myHero.ap
+            --            
+            if wLvl == 5 then
+                dmg = dmg + 46 + 0.14 * myHero.ap
+            end
+            return dmg                
+        end
+        self.R.GetDamage = function(spellInstance, enemy, stage)
+            if not spellInstance:IsReady() then return 0 end
+            --
+            local rLvl = myHero:GetSpellData(_R).level
+            local ammo = myHero:GetSpellData(_R).ammo or 3
+            --
+            return (45 + 45*rLvl + 0.2 * myHero.ap) * ammo               
+        end
     end
 
     function Syndra:Menu()
@@ -286,20 +321,19 @@
             if not IsValidTarget(unit) then return end
             --
             if self.Q:IsReady() and self.Q:CanCast(unit) and Menu.Q.KS:Value() then
-                local damage = self.Q:GetDamage(unit)
+                local damage = self.Q:CalcDamage(unit)
                 if unit.health + unit.shieldAP < damage then
                     self:CastQ(unit, 1); return
                 end
             end
             if self.W:IsReady() and self.W:CanCast(unit) and Menu.W.KS:Value() then
-                local damage = self.W:GetDamage(unit)
+                local damage = self.W:CalcDamage(unit)
                 if unit.health + unit.shieldAP < damage then
                     self:CastW(unit, 1); return
                 end
             end
             if self.R:IsReady() and self.R:CanCast(unit) and Menu.R.KS:Value() and Menu.R.Heroes[unit.charName] and Menu.R.Heroes[unit.charName]:Value() then
-                local ammo = myHero:GetSpellData(_R).ammo
-                local damage = self.R:GetDamage(unit, 2) * ammo
+                local damage = self.R:CalcDamage(unit, 2) 
                 if unit.health + unit.shieldAP < damage then
                     self.R:Cast(unit); return
                 end
@@ -308,21 +342,7 @@
     end
 
     function Syndra:OnDraw()     
-        local drawSettings = Menu.Draw
-        if drawSettings.ON:Value() then            
-            local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113)
-            local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
-            local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
-            local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)
-            local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0))
-            if self.enemies and drawSettings.Dmg:Value() then
-                for i=1, #self.enemies do
-                    local enemy = self.enemies[i]                                   
-                    local qDmg, wDmg, eDmg, rMul = self.Q:IsReady() and self.Q:GetDamage(enemy) or 0, self.W:IsReady() and self.W:GetDamage(enemy) or 0, self.E:IsReady() and self.E:GetDamage(enemy) or 0
-                    self.R:DrawDmg(enemy, 1, qDmg+wDmg+eDmg)
-                end 
-            end 
-        end    
+        DrawSpells(self) 
     end
 
     function Syndra:UpdateBalls() 
@@ -447,4 +467,4 @@
         end
     end
 
-    Syndra()
+    Syndra:__init()

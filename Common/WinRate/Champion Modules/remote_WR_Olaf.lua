@@ -51,7 +51,8 @@ function Olaf:Spells()
 		Radius = huge,
 		Collision = false,
 		From = myHero,
-		Type = "Targetted"
+		Type = "Targetted",
+		DmgType = "True"
 	})
 	self.R = Spell({
 		Slot = 3,
@@ -63,6 +64,18 @@ function Olaf:Spells()
 		From = myHero,
 		Type = "Press"
 	})
+	self.Q.GetDamage = function(spellInstance, enemy, stage)
+        if not spellInstance:IsReady() then return 0 end
+        --
+        local qLvl = myHero:GetSpellData(_Q).level 
+        return 35 + 45*qLvl + myHero.bonusDamage                
+    end
+    self.E.GetDamage = function(spellInstance, enemy, stage)
+        if not spellInstance:IsReady() then return 0 end
+        --
+        local eLvl = myHero:GetSpellData(_E).level
+        return 25 + 45*eLvl + 0.5 * myHero.totalDamage                
+    end
 end
 
 function Olaf:Menu()
@@ -185,9 +198,9 @@ function Olaf:KillSteal()
 	if self.enemies then
 		for i = 1, #self.enemies do
 			local enemy = self.enemies[i]
-			if GetDistance(enemy) <= self.E.Range and Menu.E.KS:Value() and self.E:IsReady() and self.E:GetDamage(enemy) >= enemy.health then
+			if GetDistance(enemy) <= self.E.Range and Menu.E.KS:Value() and self.E:IsReady() and self.E:CalcDamage(enemy) >= enemy.health then
 				self.E:Cast(enemy)				
-			elseif Menu.Q.KS:Value() and self.Q:IsReady() and self.Q:GetDamage(enemy) >= enemy.health + enemy.shieldAD then
+			elseif Menu.Q.KS:Value() and self.Q:IsReady() and self.Q:CalcDamage(enemy) >= enemy.health + enemy.shieldAD then
 				self.Q:CastToPred(enemy, 2)				
 			end
 		end
@@ -246,14 +259,7 @@ function Olaf:Flee()
 end        
 
 function Olaf:OnDraw()
-	local drawSettings = Menu.Draw
-	if drawSettings.ON:Value() then            
-		local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113)
-		local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
-		local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
-		local rLambda = drawSettings.R:Value() and self.R and self.R:Draw(244, 66, 104)            
-		local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0))
-	end     
+	DrawSpells(self)    
 end
 
 local ItemHotKey = {[ITEM_1] = HK_ITEM_1, [ITEM_2] = HK_ITEM_2, [ITEM_3] = HK_ITEM_3, [ITEM_4] = HK_ITEM_4, [ITEM_5] = HK_ITEM_5, [ITEM_6] = HK_ITEM_6}

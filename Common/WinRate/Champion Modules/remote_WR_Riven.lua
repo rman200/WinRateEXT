@@ -448,25 +448,13 @@
     end
 
     function Riven:OnDraw()
-        local drawSettings = Menu.Draw
-        if drawSettings.ON:Value() then            
-            local qLambda = drawSettings.Q:Value() and self.Q and self.Q:Draw(66, 244, 113)
-            local wLambda = drawSettings.W:Value() and self.W and self.W:Draw(66, 229, 244)
-            local eLambda = drawSettings.E:Value() and self.E and self.E:Draw(244, 238, 66)
-            local rLambda = drawSettings.R:Value() and self.R2 and self.R2:Draw(244, 66, 104)
-            local tLambda = drawSettings.TS:Value() and self.target and DrawMark(self.target.pos, 3, self.target.boundingRadius, DrawColor(255,255,0,0))            
-            if self.enemies and drawSettings.Dmg:Value() then
-                for i=1, #self.enemies do
-                    local enemy = self.enemies[i]
-                    local dmg = self:TotalDamage(enemy)
-                    self.R1:DrawDmg(enemy, 0, dmg)
-                    if IsValidTarget(enemy) and dmg >= enemy.health + enemy.shieldAD then
-                        local screenPos = enemy.pos:To2D()
-                        DrawText("Killable", 20, screenPos.x - 30, screenPos.y, DrawColor(255,255,0,0))
-                    end
-                end 
-            end 
-        end    
+        DrawSpells(self, function(enemy)
+            local dmg = self:TotalDamage(enemy)
+            if IsValidTarget(enemy) and dmg >= enemy.health + enemy.shieldAD then
+                local screenPos = enemy.pos:To2D()
+                DrawText("Killable", 20, screenPos.x - 30, screenPos.y, DrawColor(255,255,0,0))
+            end
+        end) 
     end
 
     function Riven:ShyCombo()      
