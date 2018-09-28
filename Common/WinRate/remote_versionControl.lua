@@ -38,11 +38,11 @@ Data = {
         },
         Lucian = {
             Version = 1.05,
-            Changelog = "Improved Dmg Calculation",,
+            Changelog = "Improved Dmg Calculation",
         },
         Olaf = {
             Version = 1.01,
-            Changelog = "Improved Dmg Calculation",,
+            Changelog = "Improved Dmg Calculation",
         },        
         Riven = {
             Version = 1.05,
@@ -54,7 +54,7 @@ Data = {
         },
         Syndra = {
             Version = 1.02,
-            Changelog = "Improved Dmg Calculation",,
+            Changelog = "Improved Dmg Calculation",
         },
         Talon = {
             Version = 1.00,
@@ -74,7 +74,7 @@ Data = {
         },
         Twitch = {
             Version = 1.04,
-            Changelog = "Improved Dmg Calculation",,
+            Changelog = "Improved Dmg Calculation",
         },
         Varus = {
             Version = 1.00,
