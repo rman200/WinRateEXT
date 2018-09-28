@@ -941,6 +941,16 @@
         end
     end
 
+    function Spell:OnImmobile(target)
+        local TargetImmobile, ImmobilePos, ImmobileCastPosition = Prediction:IsImmobile(target, self)
+        if self.Collision then
+            local colStatus = #(mCollision(self.From.pos, Pos, self)) > 0
+            if colStatus then return end
+            return TargetImmobile, ImmobilePos, ImmobileCastPosition
+        end
+        return TargetImmobile, ImmobilePos, ImmobileCastPosition
+    end
+
     local function DrawDmg(hero, damage)
         local screenPos = hero.pos:To2D()
         local barPos = {x=screenPos.x-50, y=screenPos.y-150, onScreen = screenPos.onScreen}
