@@ -31,6 +31,16 @@
             From = myHero,
             Type = "SkillShot"
         })
+        self.W = Spell({
+            Slot = 1,
+            Range = huge,
+            Delay = 0,
+            Speed = huge,
+            Radius = 0,
+            Collision = false,
+            From = myHero,
+            Type = ""
+        })
         self.E = Spell({
             Slot = 2,
             Range = 650,

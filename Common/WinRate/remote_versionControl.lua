@@ -81,7 +81,7 @@ Data = {
             Changelog = "Varus Initial Release",
         },
         Vayne = {
-            Version = 1.03,
+            Version = 1.04,
             Changelog = "Improved Vayne AA Reset",
         },        
         Vladimir = {
