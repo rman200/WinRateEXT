@@ -973,7 +973,7 @@
             if instance.enemies and drawSettings.Dmg:Value() then
                 for i=1, #instance.enemies do
                     local enemy = instance.enemies[i]
-                    local qDmg, wDmg, eDmg, rDmg = instance.Q:CalcDamage(enemy), instance.W:CalcDamage(enemy), instance.E:CalcDamage(enemy), instance.R:CalcDamage(enemy)
+                    local qDmg, wDmg, eDmg, rDmg = instance.Q and instance.Q:CalcDamage(enemy) or 0, instance.W and instance.W:CalcDamage(enemy) or 0, instance.E and instance.E:CalcDamage(enemy) or 0, instance.R and instance.R:CalcDamage(enemy) or 0
                     
                     DrawDmg(enemy, qDmg+wDmg+eDmg+rDmg)
                     if extrafn then
