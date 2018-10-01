@@ -61,7 +61,7 @@ Data = {
             Changelog = "Talon Initial Release",
         },
         Teemo = {
-            Version = 1.01,
+            Version = 1.02,
             Changelog = "Teemo Initial Release",
         },
         Thresh = {

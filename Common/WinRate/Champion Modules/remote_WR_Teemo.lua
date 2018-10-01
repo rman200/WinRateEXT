@@ -99,9 +99,6 @@
         local executeMode = 
             self.mode == 1 and self:Combo()   or 
             self.mode == 2 and self:Harass()  or
-            self.mode == 3 and self:Clear()   or
-            self.mode == 4 and self:Clear()   or
-            self.mode == 5 and self:LastHit() or
             self.mode == 6 and self:Flee()      
     end
 
