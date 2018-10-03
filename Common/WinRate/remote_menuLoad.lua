@@ -17,7 +17,7 @@
     --WR_Menu = MenuElement({id = "WR_Menu", name = "Win Rate Settings", type = MENU, leftIcon = icons.WR})
     --WR_Menu:MenuElement({id = "Prediction", name = "Prediction To Use", value = 1,drop = {"WinPred", "TPred", "WhateverTheFuckElseWeImplement", "No Pred"}})
     --
-    Menu = MenuElement({id = charName, name = "Project WinRate | "..charName, type = MENU, leftIcon = icons.WR})        
+    Menu = MenuElement({id = charName, name = "Project WinRate | "..charName, type = MENU, leftIcon = icons.WR})
         Menu:MenuElement({name = " ", drop = {"Spell Settings"}})
         if isBrokenIconChamp then                
             icons.Q = "https://raw.githubusercontent.com/rman200/WinRateEXT/master/Icons/spells/"..charName.."Q.png"
@@ -39,7 +39,28 @@
         Menu.Draw:MenuElement({id = "Q", name = "Q", value = false, leftIcon = icons.Q})
         Menu.Draw:MenuElement({id = "W", name = "W", value = false, leftIcon = icons.W})    
         Menu.Draw:MenuElement({id = "E", name = "E", value = false, leftIcon = icons.E})
-        Menu.Draw:MenuElement({id = "R", name = "R", value = false, leftIcon = icons.R})                           
-
-
-    
+        Menu.Draw:MenuElement({id = "R", name = "R", value = false, leftIcon = icons.R})
+        --
+        local ChangePred
+        local function CheckPred(newVal)
+            if newVal == 1 then
+                if _G.WR_COMMON_LOADED and ChangePred then 
+                    return ChangePred(newVal) 
+                end                
+            elseif newVal == 2 then
+                if not _G.GamsteronPredictionLoaded and FileExist(COMMON_PATH.."GamsteronCore.lua") and FileExist(COMMON_PATH.."GamsteronPrediction.lua") then
+                    require('GamsteronPrediction')              
+                end
+                if _G.GamsteronPredictionLoaded and ChangePred then 
+                    return ChangePred(newVal) 
+                end
+            elseif newVal == 3 then
+                if not _G.PremiumPrediction and FileExist(COMMON_PATH.."PremiumPrediction.lua") then
+                    require('PremiumPrediction')                    
+                end
+                if _G.PremiumPrediction and ChangePred then
+                    return ChangePred(newVal) 
+                end
+            end
+        end
+        Menu:MenuElement({id = "Pred", name = "Choose Pred", value = 1, drop = {"WR Pred", "gsoPred"}, callback=CheckPred})

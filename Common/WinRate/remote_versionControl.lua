@@ -101,7 +101,7 @@ Data = {
             Version = 1.15,
         },
         prediction = {
-            Version = 1,
+            Version = 1.01,
         },
         changelog = {
             Version = 1.01,
@@ -110,7 +110,7 @@ Data = {
             Version = 1.01,
         },
         menuLoad = {
-            Version = 1.03,
+            Version = 1.04,
         },
     },
     Utilities = {

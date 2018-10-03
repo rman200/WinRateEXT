@@ -226,5 +226,76 @@
         
         return Position, CastPosition, HitChance
     end
+    
+    ChangePred = function(newVal)
+        if newVal == 1 then
+            print("Changing to WR Pred")
+            Prediction.GetBestCastPosition = function(self, unit, spell)       
+                local range = spell.Range and spell.Range - 15 or huge
+                local radius = spell.Radius == 0 and 1 or (spell.Radius + unit.boundingRadius) - 4
+                local speed = spell.Speed or huge
+                local from = spell.From or myHero
+                local delay = spell.Delay + (0.07 + Latency() / 2000)
+                local collision = spell.Collision or false
+                --
+                local Position, CastPosition, HitChance = Vector(unit), Vector(unit), 0
+                local TargetDashing, CanHitDashing, DashPosition = self:IsDashing(unit, spell)
+                local TargetImmobile, ImmobilePos, ImmobileCastPosition = self:IsImmobile(unit, spell)
+
+                if TargetDashing then
+                    if CanHitDashing then
+                        HitChance = 5
+                    else
+                        HitChance = 0
+                    end
+                    Position, CastPosition = DashPosition, DashPosition
+                elseif TargetImmobile then
+                    Position, CastPosition = ImmobilePos, ImmobileCastPosition
+                    HitChance = 4
+                else
+                    Position, CastPosition = self:CalculateTargetPosition(unit, spell)
+
+                    if unit.activeSpell and unit.activeSpell.valid then
+                        HitChance = 2
+                    end
+
+                    if GetDistanceSqr(from.pos, CastPosition) < 250 then
+                        HitChance = 2
+                        local newSpell = {Range = range, Delay = delay * 0.5, Radius = radius, Width = radius, Speed = speed *2, From = from}
+                        Position, CastPosition = self:CalculateTargetPosition(unit, newSpell)
+                    end
+
+                    local temp_angle = from.pos:AngleBetween(unit.pos, CastPosition)
+                    if temp_angle > 60 then
+                        HitChance = 1
+                    elseif temp_angle < 30 then
+                        HitChance = 2
+                    end
+                end
+                if GetDistanceSqr(from.pos, CastPosition) >= range * range then
+                    HitChance = 0                
+                end
+                if collision and HitChance > 0 then
+                    local newSpell = {Range = range, Delay = delay, Radius = radius * 2, Width = radius * 2, Speed = speed *2, From = from}
+                    if #(mCollision(from.pos, CastPosition, newSpell)) > 0 then
+                        HitChance = 0                    
+                    end
+                end        
+                
+                return Position, CastPosition, HitChance
+            end
+        elseif newVal == 2 then
+            print("Changing to gso Pred")
+            Prediction.GetBestCastPosition = function(self, unit, s)       
+                local args = {Delay = s.Delay, Radius = s.Radius, Range = s.Range, Speed = s.Speed, Collision = s.Collision, Type = s.Type == "SkillShot" and 0 or s.Type == "AOE" and 1}
+                local pred = GamsteronPrediction:GetPrediction(unit, args, s.From)
+                local castPos
+                if pred.CastPosition then
+                    castPos = Vector(pred.CastPosition.x, 0, pred.CastPosition.y)
+                end
+                return castPos, castPos, pred.Hitchance-1
+            end
+        end
+    end
 
     print("[WR] Prediction Loaded")
