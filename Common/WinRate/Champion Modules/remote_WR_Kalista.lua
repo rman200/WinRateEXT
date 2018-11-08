@@ -102,7 +102,7 @@
                 local baseDmg = 10+ 10*eLvl + 0.6 * myHero.totalDamage
                 local dmgPerSpear = (eLvl * (eLvl*0.5 + 2.5) + 7) + (3.75*eLvl + 16.25) * myHero.totalDamage/100
                 --
-                return baseDmg + dmgPerSpear * buff.count                
+                return baseDmg + dmgPerSpear * (buff.count-1)                
             end
             return 0
         end
@@ -422,7 +422,7 @@
         if self.R:IsReady() and ally and GetDistance(ally) < self.R.Range then
             local Menu = Menu.R
             --[[Combo Stuff]]
-            if self.mode == 1 and Menu.Combo:Value() and ManaPercent(myHero) >= Menu.R.Mana:Value() then
+            if self.mode == 1 and Menu.Combo:Value() and ManaPercent(myHero) >= Menu.Mana:Value() then
                 if CountEnemiesAround(myHero.pos, self.R.Range) > Menu.Count:Value() then
                     self.R:Cast(); return
                 end
