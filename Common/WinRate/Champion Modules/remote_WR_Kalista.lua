@@ -166,7 +166,6 @@
         Menu.R:MenuElement({id = "BalistaHP", name = "Only If HP% > X", value = 20, min = 1, max = 100, step = 1})
         Menu.R:MenuElement({id = "Turret"   , name = "Only Under Turret", value = false})
 
-        Menu.R:MenuElement({id = "Mana", name = "Min Mana %", value = 0, min = 0, max = 100, step = 1})
         Menu:MenuElement({name = "[WR] "..charName.." Script", drop = {"Release_"..self.scriptVersion}})
     end
 

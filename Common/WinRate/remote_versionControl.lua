@@ -33,7 +33,7 @@ Data = {
             Changelog = "Jhin Initial Release",
         },
         Kalista = {
-            Version = 1.00,
+            Version = 1.01,
             Changelog = "Kalista Initial Release",
         },
         Lucian = {
